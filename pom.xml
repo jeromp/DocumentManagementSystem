@@ -8,11 +8,11 @@
 		<version>2.5.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.trivadis</groupId>
-	<artifactId>fileexplorer</artifactId>
+	<groupId>com.github.jeromp</groupId>
+	<artifactId>DocumentManagementSystem</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>FileExplorer</name>
-	<description>File Explorer</description>
+	<name>DocumentManagementSystem</name>
+	<description>Document Management System</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

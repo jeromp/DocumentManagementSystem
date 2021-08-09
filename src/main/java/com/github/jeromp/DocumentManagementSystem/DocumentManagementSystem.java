@@ -1,4 +1,4 @@
-package com.trivadis.fileexplorer;
+package com.github.jeromp.DocumentManagementSystem;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.*;
 
 @SpringBootApplication
 @RestController
-public class FileExplorerApplication {
+public class DocumentManagementSystem {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FileExplorerApplication.class, args);
+		SpringApplication.run(DocumentManagementSystem.class, args);
 	}
 
 	@RequestMapping("/")

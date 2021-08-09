@@ -1,10 +1,10 @@
-package com.trivadis.fileexplorer;
+package com.github.jeromp.DocumentManagementSystemTest;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FileExplorerApplicationTests {
+class DocumentManagementSystemTests {
 
 	@Test
 	void contextLoads() {
