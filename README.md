@@ -5,11 +5,18 @@ It's built with Spring Boot.
 
 ## 1. Run Application
 
-Command Line:
+Run on command line:
 ```
 mvn
 ```
 
 ### 1.1 Hello World
 [http://localhost:8080/]
+
+
+## 2. Tests
+Run on command line:
+```
+./mvnw test
+```
 
