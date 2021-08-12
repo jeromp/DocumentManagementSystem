@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE FILE (
+CREATE TABLE DOCUMENT (
     id uuid DEFAULT uuid_generate_v4 (),
     title varchar(255),
     path varchar(255),
@@ -10,11 +10,11 @@ CREATE TABLE FILE (
 
 CREATE TABLE META (
     id uuid DEFAULT uuid_generate_v4 (),
-    file_id UUID,
+    document_id UUID,
     meta_key varchar(255),
     meta_value TEXT,
     created TIMESTAMP,
     PRIMARY KEY (id),
-    FOREIGN KEY (file_id)
-        REFERENCES FILE (id)
+    FOREIGN KEY (document_id)
+        REFERENCES DOCUMENT (id)
 );

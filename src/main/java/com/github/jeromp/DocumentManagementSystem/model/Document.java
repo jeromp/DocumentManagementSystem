@@ -10,7 +10,7 @@ Model class for Documents
 */
 
 @Entity
-@Table(name="FILE")
+@Table(name="DOCUMENT")
 public class Document implements java.io.Serializable {
 
     @Id
