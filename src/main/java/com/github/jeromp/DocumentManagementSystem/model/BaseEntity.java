@@ -3,6 +3,7 @@ package com.github.jeromp.DocumentManagementSystem.model;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@EntityListeners(RevListener.class)
 @MappedSuperclass
 public abstract class BaseEntity {
 
@@ -26,17 +27,5 @@ public abstract class BaseEntity {
 
     public void setChanged(LocalDateTime changed) {
         this.changed = changed;
-    }
-
-    @PrePersist
-    private void addDates(){
-        System.out.println("Run pre persist");
-        this.created = LocalDateTime.now();
-        this.changed = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    private void updateDate(){
-        this.changed = LocalDateTime.now();
     }
 }
