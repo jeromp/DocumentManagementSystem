@@ -16,7 +16,7 @@ public class Meta extends BaseEntity {
     @Column(name="id")
     private UUID id;
 
-    @ManyToOne
+    @OneToOne
     private Document document;
 
     @Column(name="meta_key")
