@@ -16,30 +16,29 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-public class MetaRepositoryTest {
+class MetaRepositoryTest {
     @Autowired
     private DocumentRepository documentRepository;
 
     @Autowired
     private MetaRepository metaRepository;
 
-    private String metaKey = "description";
-    private String metaValue = "sample value";
+    private static final String META_KEY = "description";
+    private static final String META_VALUE = "sample value";
 
     private Meta meta;
 
     @BeforeEach
     public void setUp(){
         this.meta = new Meta();
-        this.meta.setValue(this.metaValue);
-        this.meta.setKey(this.metaKey);
+        this.meta.setValue(this.META_KEY);
+        this.meta.setKey(this.META_VALUE);
         this.meta = this.metaRepository.save(meta);
     }
 
@@ -50,9 +49,12 @@ public class MetaRepositoryTest {
 
     @Test
     public void findById(){
-        Optional<Meta> optionalMeta = this.metaRepository.findById(this.meta.getId());
-        Meta meta2 = optionalMeta.get();
-        assertEquals(meta.getId(), meta2.getId());
+        Meta meta2 = this.metaRepository.findById(this.meta.getId()).get();
+        assertAll("all meta properties",
+                () -> assertEquals(meta.getId(), meta2.getId()),
+                () -> assertEquals(meta.getKey(), meta2.getKey()),
+                () -> assertEquals(meta.getValue(), meta2.getValue())
+        );
     }
 
     @AfterEach
