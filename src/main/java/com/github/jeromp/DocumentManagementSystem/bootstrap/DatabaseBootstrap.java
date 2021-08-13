@@ -10,34 +10,38 @@ import com.github.jeromp.DocumentManagementSystem.repository.MetaRepository;
 
 public class DatabaseBootstrap implements InitializingBean {
     @Autowired
-    DocumentRepository documentRepository;
+    private DocumentRepository documentRepository;
 
     @Autowired
-    MetaRepository metaRepository;
+    private MetaRepository metaRepository;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         setUpDocumentDatabase();
-        setUpMetaDatabase();
     }
 
     private void setUpDocumentDatabase() {
-        List<Document> documentList = documentRepository.findAll();
+        List<Document> documentList = this.documentRepository.findAll();
+        Document document;
         if(documentList.size() < 1) {
-            Document document = new Document();
+            document = new Document();
             document.setTitle("Sample Document");
             document.setPath("sample_path");
-            documentRepository.save(document);
+            document = this.documentRepository.save(document);
+        } else {
+            document = documentList.get(0);
         }
+        setUpMetaDatabase(document);
     }
 
-    private void setUpMetaDatabase() {
-        List<Meta> metaList = metaRepository.findAll();
+    private void setUpMetaDatabase(Document document) {
+        List<Meta> metaList = this.metaRepository.findAll();
         if(metaList.size() < 1) {
             Meta meta = new Meta();
             meta.setKey("description");
             meta.setValue("This is a sample description");
-            metaRepository.save(meta);
+            meta.setDocument(document);
+            this.metaRepository.save(meta);
         }
     }
 }

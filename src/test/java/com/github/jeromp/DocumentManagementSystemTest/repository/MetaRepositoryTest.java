@@ -25,15 +25,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataJpaTest
 public class MetaRepositoryTest {
     @Autowired
-    DocumentRepository documentRepository;
+    private DocumentRepository documentRepository;
 
     @Autowired
-    MetaRepository metaRepository;
+    private MetaRepository metaRepository;
 
-    String metaKey = "description";
-    String metaValue = "sample value";
+    private String metaKey = "description";
+    private String metaValue = "sample value";
 
-    Meta meta;
+    private Meta meta;
 
     @BeforeEach
     public void setUp(){

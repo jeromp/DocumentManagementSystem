@@ -11,15 +11,15 @@ Model class for Meta data
 
 @Entity
 @Table(name="META")
-public class Meta implements java.io.Serializable {
+public class Meta extends BaseEntity implements java.io.Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
     private UUID id;
 
-    @Column(name="document_id")
-    private UUID documentId;
+    @ManyToOne
+    private Document document;
 
     @Column(name="meta_key")
     private String key;
@@ -27,18 +27,12 @@ public class Meta implements java.io.Serializable {
     @Column(name="meta_value")
     private String value;
 
-    @Column(name="created")
-    private LocalDateTime created;
-
-    public Meta() {
-        this.created = LocalDateTime.now();
+    public UUID getId() {
+        return this.id;
     }
 
-    public Meta(UUID documentId, String key, String value){
-        this.documentId = documentId;
-        this.key = key;
-        this.value = value;
-        this.created = LocalDateTime.now();
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public void setKey(String key) {
@@ -57,16 +51,28 @@ public class Meta implements java.io.Serializable {
         return this.value;
     }
 
-    public void setDocumentId(UUID id) {
-        this.documentId = id;
+    public LocalDateTime getCreated() {
+        return created;
     }
 
-    public UUID getDocumentId(){
-        return this.documentId;
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
     }
 
-    public UUID getId() {
-        return this.id;
+    public LocalDateTime getChanged() {
+        return changed;
+    }
+
+    public void setChanged(LocalDateTime changed) {
+        this.changed = changed;
+    }
+
+    public Document getDocument() {
+        return document;
+    }
+
+    public void setDocument(Document document) {
+        this.document = document;
     }
 }
 

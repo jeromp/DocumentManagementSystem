@@ -20,15 +20,17 @@ import com.github.jeromp.DocumentManagementSystem.repository.DocumentRepository;
 @DataJpaTest
 public class DocumentRepositoryTest {
     @Autowired
-    DocumentRepository repository;
+    private DocumentRepository repository;
 
-    Document document1;
-    String documentTitle = "Test Document";
-    String documentPath = "test_path";
+    private Document document1;
+    private String documentTitle = "Test Document";
+    private String documentPath = "test_path";
 
     @BeforeEach
     public void setUp(){
-        this.document1 = new Document(this.documentTitle, this.documentPath);
+        this.document1 = new Document();
+        this.document1.setTitle(this.documentTitle);
+        this.document1.setPath(this.documentPath);
         this.document1 = this.repository.save(document1);
     }
 

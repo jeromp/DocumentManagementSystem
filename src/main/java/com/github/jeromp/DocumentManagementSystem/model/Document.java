@@ -11,7 +11,7 @@ Model class for Documents
 
 @Entity
 @Table(name="DOCUMENT")
-public class Document implements java.io.Serializable {
+public class Document extends BaseEntity implements java.io.Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,17 +24,12 @@ public class Document implements java.io.Serializable {
     @Column(name="path")
     private String path;
 
-    @Column(name="created")
-    private LocalDateTime created;
-
-    public Document(){
-        this.created = LocalDateTime.now();
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public Document(String title, String path){
-        this.title = title;
-        this.path = path;
-        this.created = LocalDateTime.now();
+    public UUID getId() {
+        return this.id;
     }
 
     public void setTitle(String title) {
@@ -53,8 +48,20 @@ public class Document implements java.io.Serializable {
         return this.path;
     }
 
-    public UUID getId() {
-        return this.id;
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public LocalDateTime getChanged() {
+        return changed;
+    }
+
+    public void setChanged(LocalDateTime changed) {
+        this.changed = changed;
     }
 
     @Override
