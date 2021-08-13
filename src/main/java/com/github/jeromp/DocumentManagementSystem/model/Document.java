@@ -2,8 +2,6 @@ package com.github.jeromp.DocumentManagementSystem.model;
 
 import java.util.UUID;
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /*
 Model class for Documents
@@ -11,7 +9,7 @@ Model class for Documents
 
 @Entity
 @Table(name="DOCUMENT")
-public class Document extends BaseEntity implements java.io.Serializable {
+public class Document extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,22 +44,6 @@ public class Document extends BaseEntity implements java.io.Serializable {
 
     public String getPath(){
         return this.path;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-    public LocalDateTime getChanged() {
-        return changed;
-    }
-
-    public void setChanged(LocalDateTime changed) {
-        this.changed = changed;
     }
 
     @Override

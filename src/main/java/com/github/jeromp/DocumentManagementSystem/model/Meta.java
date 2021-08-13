@@ -2,8 +2,6 @@ package com.github.jeromp.DocumentManagementSystem.model;
 
 import java.util.UUID;
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /*
 Model class for Meta data
@@ -11,7 +9,7 @@ Model class for Meta data
 
 @Entity
 @Table(name="META")
-public class Meta extends BaseEntity implements java.io.Serializable {
+public class Meta extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,22 +47,6 @@ public class Meta extends BaseEntity implements java.io.Serializable {
 
     public String getValue(){
         return this.value;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-    public LocalDateTime getChanged() {
-        return changed;
-    }
-
-    public void setChanged(LocalDateTime changed) {
-        this.changed = changed;
     }
 
     public Document getDocument() {

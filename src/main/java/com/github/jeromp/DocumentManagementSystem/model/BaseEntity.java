@@ -12,6 +12,22 @@ public abstract class BaseEntity {
     @Column(name="changed")
     protected LocalDateTime changed;
 
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public LocalDateTime getChanged() {
+        return changed;
+    }
+
+    public void setChanged(LocalDateTime changed) {
+        this.changed = changed;
+    }
+
     @PrePersist
     private void addDates(){
         System.out.println("Run pre persist");
