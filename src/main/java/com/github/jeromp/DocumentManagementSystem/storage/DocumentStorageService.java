@@ -15,12 +15,12 @@ import java.nio.file.StandardCopyOption;
 public class DocumentStorageService implements StorageService {
     private final Path rootLocation;
 
-    @Autowired
-    StorageProperties properties;
+    private StorageProperties properties;
 
     @Autowired
-    public DocumentStorageService(){
-        this.rootLocation = Paths.get(properties.getRootPath());
+    public DocumentStorageService(StorageProperties properties){
+        this.properties = properties;
+        this.rootLocation = Paths.get(this.properties.getRootPath());
     }
 
     @Override
@@ -49,6 +49,9 @@ public class DocumentStorageService implements StorageService {
                     .normalize().toAbsolutePath();
             if(!destination.getParent().equals(this.rootLocation.toAbsolutePath())) {
                 throw new StorageException("Cannot store file outside current directory");
+            }
+            if(Files.exists(load(fileName))){
+                throw new StorageException("File exists.");
             }
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destination,
