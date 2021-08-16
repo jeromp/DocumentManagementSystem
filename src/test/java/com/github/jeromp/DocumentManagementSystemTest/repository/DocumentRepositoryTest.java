@@ -27,7 +27,7 @@ class DocumentRepositoryTest {
     private static final String DOCUMENT_PATH = "test_path";
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         this.document1 = new Document();
         this.document1.setTitle(this.DOCUMENT_TITLE);
         this.document1.setPath(this.DOCUMENT_PATH);
@@ -35,12 +35,12 @@ class DocumentRepositoryTest {
     }
 
     @Test
-    public void documentsInTable(){
+    void documentsInTable(){
         assertNotNull(this.repository.findAll());
     }
 
     @Test
-    public void findById(){
+    void findById(){
         Document document2 = this.repository.findById(this.document1.getId()).get();
         assertAll("all properties",
                 () -> assertEquals(document1.getId(), document2.getId()),
@@ -51,7 +51,7 @@ class DocumentRepositoryTest {
     }
 
     @AfterEach
-    public void tearDown(){
+    void tearDown(){
         this.repository.delete(this.document1);
     }
 

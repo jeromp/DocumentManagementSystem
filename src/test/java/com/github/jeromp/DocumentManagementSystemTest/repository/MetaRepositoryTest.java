@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,36 +30,36 @@ class MetaRepositoryTest {
     @Autowired
     private MetaRepository metaRepository;
 
-    private static final String META_KEY = "description";
-    private static final String META_VALUE = "sample value";
+    private static final String META_DESCRIPTION = "description";
+    private static final LocalDateTime META_FILE_CREATED = LocalDateTime.now();
 
     private Meta meta;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         this.meta = new Meta();
-        this.meta.setValue(this.META_KEY);
-        this.meta.setKey(this.META_VALUE);
+        this.meta.setDescription(this.META_DESCRIPTION);
+        this.meta.setDocumentCreated(this.META_FILE_CREATED);
         this.meta = this.metaRepository.save(meta);
     }
 
     @Test
-    public void metasInTable(){
+    void metasInTable(){
         assertNotNull(this.metaRepository.findAll());
     }
 
     @Test
-    public void findById(){
-        Meta meta2 = this.metaRepository.findById(this.meta.getId()).get();
+    void findById(){
+        Meta meta2 = this.metaRepository.findById(this.meta.getDocument().getId()).get();
         assertAll("all meta properties",
-                () -> assertEquals(meta.getId(), meta2.getId()),
-                () -> assertEquals(meta.getKey(), meta2.getKey()),
-                () -> assertEquals(meta.getValue(), meta2.getValue())
+                () -> assertEquals(meta.getDescription(), meta2.getDescription()),
+                () -> assertEquals(meta.getDocumentCreated(), meta2.getDocumentCreated()),
+                () -> assertEquals(meta.getCreated(), meta2.getCreated())
         );
     }
 
     @AfterEach
-    public void tearDown(){
+    void tearDown(){
         this.metaRepository.delete(this.meta);
     }
 }

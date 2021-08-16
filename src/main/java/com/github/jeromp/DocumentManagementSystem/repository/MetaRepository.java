@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface MetaRepository extends JpaRepository<Meta, UUID> {
-    // public List<Meta> findByDocumentId(UUID documentId);
 }

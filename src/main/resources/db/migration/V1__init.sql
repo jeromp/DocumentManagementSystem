@@ -10,13 +10,12 @@ CREATE TABLE document (
 );
 
 CREATE TABLE meta (
-    id uuid DEFAULT uuid_generate_v4 (),
     document_id UUID,
-    meta_key varchar(255),
-    meta_value TEXT,
+    document_created TIMESTAMP,
+    description TEXT,
     created TIMESTAMP,
     changed TIMESTAMP,
-    PRIMARY KEY (id),
+    PRIMARY KEY (document_id),
     FOREIGN KEY (document_id)
         REFERENCES document (id)
 );

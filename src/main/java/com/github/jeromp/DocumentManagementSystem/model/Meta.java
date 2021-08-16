@@ -1,5 +1,6 @@
 package com.github.jeromp.DocumentManagementSystem.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.persistence.*;
 
@@ -12,41 +13,33 @@ Model class for Meta data
 public class Meta extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id")
+    @Column(name="document_id")
     private UUID id;
 
     @OneToOne
+    @PrimaryKeyJoinColumn(name="document_id", referencedColumnName="id")
     private Document document;
 
-    @Column(name="meta_key")
-    private String key;
+    @Column(name="description")
+    private String description;
 
-    @Column(name="meta_value")
-    private String value;
+    @Column(name="document_created")
+    private LocalDateTime documentCreated;
 
-    public UUID getId() {
-        return this.id;
+    public String getDescription() {
+        return description;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public LocalDateTime getDocumentCreated() {
+        return documentCreated;
     }
 
-    public String getKey(){
-        return this.key;
-    }
-
-    public void setValue(String value){
-        this.value = value;
-    }
-
-    public String getValue(){
-        return this.value;
+    public void setDocumentCreated(LocalDateTime documentCreated) {
+        this.documentCreated = documentCreated;
     }
 
     public Document getDocument() {
@@ -54,7 +47,15 @@ public class Meta extends BaseEntity {
     }
 
     public void setDocument(Document document) {
-        this.document = document;
+        this.setId(document.getId());
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 }
 
