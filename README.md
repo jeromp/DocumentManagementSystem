@@ -3,20 +3,24 @@
 The Document Management System is a RESTful Service for managing documents and their metadata. 
 It's built with Spring Boot.
 
-## 1. Run Application
+### Requirements
 
-Run on command line:
+- Java 11
+- Maven
+- PostgreSQL
+
+## Run Application
+
+Add in application.properties your database and credentials
+
 ```
-mvn
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
 ```
 
 ### 1.1 Hello World
-[http://localhost:8080/]
+[http://localhost:8080/](http://localhost:8080/)
 
 
-## 2. Tests
-Run on command line:
-```
-./mvnw test
-```
 
