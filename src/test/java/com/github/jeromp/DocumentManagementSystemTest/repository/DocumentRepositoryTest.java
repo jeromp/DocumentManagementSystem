@@ -1,6 +1,8 @@
 package com.github.jeromp.DocumentManagementSystem;
 
 import java.util.Optional;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
         replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
+@DisplayName("DocumentRepositoryTest")
 class DocumentRepositoryTest {
     @Autowired
     private DocumentRepository repository;
@@ -35,11 +38,13 @@ class DocumentRepositoryTest {
     }
 
     @Test
+    @DisplayName("Test if there are documents in database")
     void documentsInTable(){
         assertNotNull(this.repository.findAll());
     }
 
     @Test
+    @DisplayName("Test if inserted Document is complete")
     void findById(){
         Document document2 = this.repository.findById(this.document1.getId()).get();
         assertAll("all properties",

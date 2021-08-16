@@ -1,5 +1,6 @@
 package com.github.jeromp.DocumentManagementSystem;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
@@ -14,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("DocumentManagementSystemTests")
 class DocumentManagementSystemTests {
 
 	@Autowired
@@ -21,10 +23,12 @@ class DocumentManagementSystemTests {
 
 
 	@Test
+	@DisplayName("Context loads")
 	void contextLoads() {
 	}
 
 	@Test
+	@DisplayName("Example test for hello world request")
 	void getHelloWorld() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.APPLICATION_JSON))
 						.andExpect(status().isOk())
