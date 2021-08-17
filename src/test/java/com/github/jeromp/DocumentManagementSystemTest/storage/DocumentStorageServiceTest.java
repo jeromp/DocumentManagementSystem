@@ -14,14 +14,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("DocumentStorageServiceTest")
 public class DocumentStorageServiceTest {
 
-    private StorageProperties properties = new StorageProperties();
-    private DocumentStorageService service;
+    private static StorageProperties properties = new StorageProperties();
+    private static DocumentStorageService service = new DocumentStorageService(properties);
 
     private static final String FILE_NAME = "test.txt";
+    private static MockMultipartFile TEST_FILE = new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
+                "Hello, World".getBytes());
 
-    @BeforeEach
-    void init(){
-        service = new DocumentStorageService(properties);
+    @BeforeAll
+    static void init(){
         service.init();
     }
 
@@ -34,34 +35,43 @@ public class DocumentStorageServiceTest {
     @Test
     @DisplayName("save and load a file")
     void saveAndLoad(){
-        service.store(new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
-                "Hello, World".getBytes()), FILE_NAME);
+        service.store(TEST_FILE, FILE_NAME);
         assertTrue(Files.exists(service.load(FILE_NAME)));
     }
 
     @Test
     @DisplayName("override an existing file")
     void overrideFile(){
-        service.store(new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
-                "Hello, World".getBytes()), FILE_NAME);
+        service.store(TEST_FILE, FILE_NAME);
         assertThrows(StorageException.class, () -> service.store(new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
                 "Hello, other World".getBytes()), FILE_NAME));
     }
 
     @Test
+    @DisplayName("save an empty file")
+    void saveEmptyFile(){
+        assertThrows(StorageException.class, () -> service.store(new MockMultipartFile("test", "", null ,
+                (byte[]) null), FILE_NAME));
+    }
+
+    @Test
     @DisplayName("save file with directory")
     void saveFileAndDirectory(){
-        assertThrows(StorageException.class, () -> service.store(new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
-                "Hello, World".getBytes()), "testDirectory/" + FILE_NAME));
+        assertThrows(StorageException.class, () -> service.store(TEST_FILE, "testDirectory/" + FILE_NAME));
+    }
+
+    @Test
+    @DisplayName("delete existing file")
+    void deleteExistingFile(){
+        service.store(TEST_FILE, FILE_NAME);
+        assertTrue(Files.exists(service.load(FILE_NAME)));
+        service.delete(FILE_NAME);
+        assertFalse(Files.exists(service.load(FILE_NAME)));
     }
 
     @AfterEach
     void tearDown(){
-        try {
-            service.delete(FILE_NAME);
-        } catch(StorageException e) {
-
-        }
+        service.delete(FILE_NAME);
     }
 
 }

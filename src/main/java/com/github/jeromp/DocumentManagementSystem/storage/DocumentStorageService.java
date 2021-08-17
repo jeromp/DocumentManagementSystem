@@ -42,7 +42,7 @@ public class DocumentStorageService implements StorageService {
     public void store(MultipartFile file, String fileName) {
         try {
             if(file.isEmpty()){
-                throw new StorageException("");
+                throw new StorageException("No file is provided.");
             }
             Path destination = this.rootLocation.resolve(
                     Paths.get(fileName))
@@ -51,7 +51,7 @@ public class DocumentStorageService implements StorageService {
                 throw new StorageException("Cannot store file outside current directory");
             }
             if(Files.exists(load(fileName))){
-                throw new StorageException("File exists.");
+                throw new StorageException("File with same name exists.");
             }
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destination,
