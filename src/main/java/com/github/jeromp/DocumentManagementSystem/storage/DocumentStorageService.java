@@ -20,7 +20,7 @@ public class DocumentStorageService implements StorageService {
     @Autowired
     public DocumentStorageService(StorageProperties properties){
         this.properties = properties;
-        this.rootLocation = Paths.get(this.properties.getRootPath());
+        this.rootLocation = Paths.get(properties.getRootPath());
     }
 
     @Override
@@ -60,6 +60,19 @@ public class DocumentStorageService implements StorageService {
         }
         catch(IOException e) {
             throw new StorageException("Failed to store file.", e);
+        }
+    }
+
+    @Override
+    public void delete(String fileName){
+        try {
+            Path file = this.rootLocation.resolve(
+                            Paths.get(fileName))
+                    .normalize().toAbsolutePath();
+            Files.deleteIfExists(file);
+
+        } catch(IOException e) {
+            throw new StorageException("Failed to delete file.", e);
         }
     }
 }
