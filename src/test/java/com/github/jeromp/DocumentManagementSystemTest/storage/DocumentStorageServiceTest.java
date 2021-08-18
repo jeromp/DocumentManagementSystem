@@ -1,6 +1,7 @@
 package com.github.jeromp.DocumentManagementSystemTest.storage;
 
 import com.github.jeromp.DocumentManagementSystem.storage.DocumentStorageService;
+import com.github.jeromp.DocumentManagementSystem.storage.DuplicateFileException;
 import com.github.jeromp.DocumentManagementSystem.storage.StorageException;
 import com.github.jeromp.DocumentManagementSystem.storage.StorageProperties;
 import org.junit.jupiter.api.*;
@@ -38,7 +39,7 @@ public class DocumentStorageServiceTest {
     @DisplayName("override an existing file")
     void overrideFile(){
         service.create(TEST_FILE, FILE_NAME);
-        StorageException exception = assertThrows(StorageException.class, () -> service.create(new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
+        DuplicateFileException exception = assertThrows(DuplicateFileException.class, () -> service.create(new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
                 "Hello, other World".getBytes()), FILE_NAME));
         assertEquals(403, exception.getErrorCode());
     }

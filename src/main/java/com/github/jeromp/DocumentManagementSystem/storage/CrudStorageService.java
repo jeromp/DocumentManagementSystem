@@ -5,8 +5,6 @@ import java.nio.file.Path;
 
 public interface CrudStorageService {
 
-    void init();
-
     void create(MultipartFile file, String fileName);
 
     void delete(String fileName);
