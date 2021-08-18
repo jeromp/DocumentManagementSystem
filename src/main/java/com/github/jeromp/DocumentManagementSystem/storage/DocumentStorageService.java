@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -12,10 +13,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @Service
-public class DocumentStorageService implements StorageService {
+public class DocumentStorageService implements CrudStorageService {
     private final Path rootLocation;
 
-    private StorageProperties properties;
+    private final StorageProperties properties;
 
     @Autowired
     public DocumentStorageService(StorageProperties properties){
@@ -24,6 +25,7 @@ public class DocumentStorageService implements StorageService {
     }
 
     @Override
+    @PostConstruct
     public void init() {
         try {
             Files.createDirectories(this.rootLocation);
@@ -34,23 +36,21 @@ public class DocumentStorageService implements StorageService {
     }
 
     @Override
-    public Path load(String fileName) {
+    public Path read(String fileName) {
         return this.rootLocation.resolve(fileName);
     }
 
     @Override
-    public void store(MultipartFile file, String fileName) {
+    public void create(MultipartFile file, String fileName) {
         try {
             if(file.isEmpty()){
                 throw new StorageException("No file is provided.");
             }
-            Path destination = this.rootLocation.resolve(
-                    Paths.get(fileName))
-                    .normalize().toAbsolutePath();
+            Path destination = this.getPath(fileName);
             if(!destination.getParent().equals(this.rootLocation.toAbsolutePath())) {
                 throw new StorageException("Cannot store file outside current directory");
             }
-            if(Files.exists(load(fileName))){
+            if(Files.exists(read(fileName))){
                 throw new StorageException("File with same name exists.");
             }
             try (InputStream inputStream = file.getInputStream()) {
@@ -66,13 +66,17 @@ public class DocumentStorageService implements StorageService {
     @Override
     public void delete(String fileName){
         try {
-            Path file = this.rootLocation.resolve(
-                            Paths.get(fileName))
-                    .normalize().toAbsolutePath();
+            Path file = this.getPath(fileName);
             Files.deleteIfExists(file);
 
         } catch(IOException e) {
             throw new StorageException("Failed to delete file.", e);
         }
+    }
+
+    private Path getPath(String fileName){
+        return this.rootLocation.resolve(
+                        Paths.get(fileName))
+                .normalize().toAbsolutePath();
     }
 }

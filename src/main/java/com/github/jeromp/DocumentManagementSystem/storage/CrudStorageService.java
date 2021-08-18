@@ -3,14 +3,14 @@ package com.github.jeromp.DocumentManagementSystem.storage;
 import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Path;
 
-public interface StorageService {
+public interface CrudStorageService {
 
     void init();
 
-    void store(MultipartFile file, String fileName);
+    void create(MultipartFile file, String fileName);
 
     void delete(String fileName);
 
-    Path load(String fileName);
+    Path read(String fileName);
 
 }
