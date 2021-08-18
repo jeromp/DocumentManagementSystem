@@ -31,7 +31,7 @@ public class DocumentStorageService implements CrudStorageService {
             Files.createDirectories(this.rootLocation);
         }
         catch (IOException e) {
-            throw new StorageException("Could not initialize storage", e);
+            throw new StorageException("Could not initialize storage", 400, e);
         }
     }
 
@@ -44,14 +44,14 @@ public class DocumentStorageService implements CrudStorageService {
     public void create(MultipartFile file, String fileName) {
         try {
             if(file.isEmpty()){
-                throw new StorageException("No file is provided.");
+                throw new StorageException("No file is provided.", 400);
             }
             Path destination = this.getPath(fileName);
             if(!destination.getParent().equals(this.rootLocation.toAbsolutePath())) {
-                throw new StorageException("Cannot store file outside current directory");
+                throw new StorageException("Cannot store file outside current directory", 403);
             }
             if(Files.exists(read(fileName))){
-                throw new StorageException("File with same name exists.");
+                throw new StorageException("File with same name exists.", 403);
             }
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destination,
@@ -59,7 +59,7 @@ public class DocumentStorageService implements CrudStorageService {
             }
         }
         catch(IOException e) {
-            throw new StorageException("Failed to store file.", e);
+            throw new StorageException("Failed to store file.", 400, e);
         }
     }
 
@@ -70,7 +70,7 @@ public class DocumentStorageService implements CrudStorageService {
             Files.deleteIfExists(file);
 
         } catch(IOException e) {
-            throw new StorageException("Failed to delete file.", e);
+            throw new StorageException("Failed to delete file.", 400, e);
         }
     }
 

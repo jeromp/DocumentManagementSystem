@@ -38,21 +38,24 @@ public class DocumentStorageServiceTest {
     @DisplayName("override an existing file")
     void overrideFile(){
         service.create(TEST_FILE, FILE_NAME);
-        assertThrows(StorageException.class, () -> service.create(new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
+        StorageException exception = assertThrows(StorageException.class, () -> service.create(new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
                 "Hello, other World".getBytes()), FILE_NAME));
+        assertEquals(403, exception.getErrorCode());
     }
 
     @Test
     @DisplayName("save an empty file")
     void saveEmptyFile(){
-        assertThrows(StorageException.class, () -> service.create(new MockMultipartFile("test", "", null ,
+        StorageException exception = assertThrows(StorageException.class, () -> service.create(new MockMultipartFile("test", "", null ,
                 (byte[]) null), FILE_NAME));
+        assertEquals(400, exception.getErrorCode());
     }
 
     @Test
     @DisplayName("save file with directory")
     void saveFileAndDirectory(){
-        assertThrows(StorageException.class, () -> service.create(TEST_FILE, "testDirectory/" + FILE_NAME));
+        StorageException exception = assertThrows(StorageException.class, () -> service.create(TEST_FILE, "testDirectory/" + FILE_NAME));
+        assertEquals(403, exception.getErrorCode());
     }
 
     @Test
