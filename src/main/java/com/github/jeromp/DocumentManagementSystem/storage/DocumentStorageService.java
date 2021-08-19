@@ -14,6 +14,9 @@ import java.nio.file.StandardCopyOption;
 
 @Service
 public class DocumentStorageService implements CrudStorageService {
+    
+    private final Path rootLocation;
+    private final StorageProperties properties;
     private final Path rootLocation;
 
     private final StorageProperties properties;
