@@ -7,5 +7,5 @@ import java.util.UUID;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, UUID> {
-
+    public Document findByUuid(UUID uuid);
 }

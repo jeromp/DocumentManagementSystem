@@ -12,9 +12,12 @@ Model class for Documents
 public class Document extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name="id")
-    private UUID id;
+    private Long id;
+
+    @Column(name="uuid")
+    private UUID uuid;
 
     @Column(name="title")
     private String title;
@@ -22,12 +25,16 @@ public class Document extends BaseEntity {
     @Column(name="path")
     private String path;
 
-    public void setId(UUID id) {
-        this.id = id;
+    public Long getId(){
+        return this.id;
     }
 
-    public UUID getId() {
-        return this.id;
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public UUID getUuid() {
+        return this.uuid;
     }
 
     public void setTitle(String title) {

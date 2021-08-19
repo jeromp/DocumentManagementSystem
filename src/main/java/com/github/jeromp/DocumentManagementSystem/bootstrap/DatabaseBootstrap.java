@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+
 import com.github.jeromp.DocumentManagementSystem.model.Document;
 import com.github.jeromp.DocumentManagementSystem.model.Meta;
 import com.github.jeromp.DocumentManagementSystem.repository.DocumentRepository;
@@ -30,6 +32,7 @@ public class DatabaseBootstrap implements InitializingBean {
             document = new Document();
             document.setTitle("Sample Document");
             document.setPath("sample_path");
+            document.setUuid(UUID.randomUUID());
             document = this.documentRepository.save(document);
         } else {
             document = documentList.get(0);
@@ -44,7 +47,6 @@ public class DatabaseBootstrap implements InitializingBean {
             meta.setDescription("This is a sample description");
             meta.setDocumentCreated(LocalDateTime.now());
             meta.setDocument(document);
-            meta.setId(document.getId());
             this.metaRepository.save(meta);
         }
     }

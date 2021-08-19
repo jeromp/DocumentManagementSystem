@@ -1,6 +1,7 @@
 package com.github.jeromp.DocumentManagementSystem;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,10 +29,12 @@ class DocumentRepositoryTest {
     private Document document1;
     private static final String DOCUMENT_TITLE = "Test Document";
     private static final String DOCUMENT_PATH = "test_path";
+    private static final UUID DOCUMENT_UUID = UUID.randomUUID();
 
     @BeforeEach
     void setUp(){
         this.document1 = new Document();
+        this.document1.setUuid(DOCUMENT_UUID);
         this.document1.setTitle(this.DOCUMENT_TITLE);
         this.document1.setPath(this.DOCUMENT_PATH);
         this.document1 = this.repository.save(document1);
@@ -46,9 +49,10 @@ class DocumentRepositoryTest {
     @Test
     @DisplayName("Test if inserted Document is complete")
     void findById(){
-        Document document2 = this.repository.findById(this.document1.getId()).get();
+        Document document2 = this.repository.findByUuid(this.document1.getUuid());
         assertAll("all properties",
                 () -> assertEquals(document1.getId(), document2.getId()),
+                () -> assertEquals(document1.getUuid(), document2.getUuid()),
                 () -> assertEquals(document1.getTitle(), document2.getTitle()),
                 () -> assertEquals(document1.getPath(), document2.getPath()),
                 () -> assertEquals(document1.getCreated(), document2.getCreated())

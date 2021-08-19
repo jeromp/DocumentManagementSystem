@@ -13,11 +13,11 @@ Model class for Meta data
 public class Meta extends BaseEntity {
 
     @Id
-    @Column(name="document_id")
-    private UUID id;
+    @Column(name="id")
+    private Long id;
 
     @OneToOne
-    @PrimaryKeyJoinColumn(name="document_id", referencedColumnName="id")
+    @Column(name="document_id")
     private Document document;
 
     @Column(name="description")
@@ -47,14 +47,14 @@ public class Meta extends BaseEntity {
     }
 
     public void setDocument(Document document) {
-        this.setId(document.getId());
+        this.document = document;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }

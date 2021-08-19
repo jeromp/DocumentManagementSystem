@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -51,8 +52,8 @@ public class DocumentApiRestController {
     @PostMapping("/")
     public Document post(@RequestPart("title") @NotNull String title, @RequestParam("file") @Valid @NotNull @NotBlank MultipartFile file){
         UUID uuid = UUID.randomUUID();
-        String fileName = title + "-" + uuid;
-        this.documentStorageService.store(file, fileName);
+        String fileName = createFileName(file.getOriginalFilename(), title, uuid);
+        this.documentStorageService.create(file, fileName);
         Document document = new Document();
         document.setTitle(title);
         document.setId(uuid);
@@ -64,5 +65,12 @@ public class DocumentApiRestController {
     @ExceptionHandler(DocumentNotFoundException.class)
     public void handleDocumentNotFound(DocumentNotFoundException exception, HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.NOT_FOUND.value(), exception.getMessage());
+    }
+
+    private String createFileName(String oldFile, String title, UUID id){
+        var extension = Optional.ofNullable(oldFile)
+                .filter(f -> f.contains("."))
+                .map(f -> f.substring(oldFile.lastIndexOf(".") + 1));
+        return title + "-" + id + "." + extension.get();
     }
 }
