@@ -1,23 +1,20 @@
 package com.github.jeromp.DocumentManagementSystem.storage;
 
+import org.springframework.http.HttpStatus;
+
 public class StorageException extends RuntimeException {
-    private int errorCode = 400;
+    private HttpStatus errorCode;
 
-    public StorageException(String message) {
-        super(message);
+    public StorageException(HttpStatus errorCode, String message) {
+        this(errorCode, message, null);
     }
 
-    public StorageException(String message, int errorCode) {
-        super(message);
-        this.errorCode = errorCode;
-    }
-
-    public StorageException(String message, int errorCode, Throwable cause) {
+    public StorageException(HttpStatus errorCode, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
     }
 
-    public int getErrorCode() {
+    public HttpStatus getErrorCode() {
         return this.errorCode;
     }
 }

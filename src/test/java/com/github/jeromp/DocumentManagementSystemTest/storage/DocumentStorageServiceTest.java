@@ -5,6 +5,7 @@ import com.github.jeromp.DocumentManagementSystem.storage.DuplicateFileException
 import com.github.jeromp.DocumentManagementSystem.storage.StorageException;
 import com.github.jeromp.DocumentManagementSystem.storage.StorageProperties;
 import org.junit.jupiter.api.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -12,11 +13,11 @@ import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("DocumentStorageServiceTest")
+@DisplayName("Document Storage Service unit test")
 public class DocumentStorageServiceTest {
 
-    private static final StorageProperties properties = new StorageProperties();
-    private static DocumentStorageService service = new DocumentStorageService(properties);
+    private static final StorageProperties STORAGE_PROPERTIES = new StorageProperties();
+    private static DocumentStorageService SERVICE = new DocumentStorageService(STORAGE_PROPERTIES);
 
     private static final String FILE_NAME = "test.txt";
     private static final MockMultipartFile TEST_FILE = new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
@@ -25,52 +26,52 @@ public class DocumentStorageServiceTest {
     @Test
     @DisplayName("load non existent file")
     void loadNonExistent(){
-        assertFalse(Files.exists(service.read("non-existent.txt")));
+        assertFalse(Files.exists(SERVICE.read("non-existent.txt")));
     }
 
     @Test
     @DisplayName("save and load a file")
     void saveAndLoad(){
-        service.create(TEST_FILE, FILE_NAME);
-        assertTrue(Files.exists(service.read(FILE_NAME)));
+        SERVICE.create(TEST_FILE, FILE_NAME);
+        assertTrue(Files.exists(SERVICE.read(FILE_NAME)));
     }
 
     @Test
     @DisplayName("override an existing file")
     void overrideFile(){
-        service.create(TEST_FILE, FILE_NAME);
-        DuplicateFileException exception = assertThrows(DuplicateFileException.class, () -> service.create(new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
+        SERVICE.create(TEST_FILE, FILE_NAME);
+        var exception = assertThrows(DuplicateFileException.class, () -> SERVICE.create(new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
                 "Hello, other World".getBytes()), FILE_NAME));
-        assertEquals(403, exception.getErrorCode());
+        assertEquals(HttpStatus.FORBIDDEN, exception.getErrorCode());
     }
 
     @Test
     @DisplayName("save an empty file")
     void saveEmptyFile(){
-        StorageException exception = assertThrows(StorageException.class, () -> service.create(new MockMultipartFile("test", "", null ,
+        var exception = assertThrows(StorageException.class, () -> SERVICE.create(new MockMultipartFile("test", "", null ,
                 (byte[]) null), FILE_NAME));
-        assertEquals(400, exception.getErrorCode());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getErrorCode());
     }
 
     @Test
     @DisplayName("save file with directory")
     void saveFileAndDirectory(){
-        StorageException exception = assertThrows(StorageException.class, () -> service.create(TEST_FILE, "testDirectory/" + FILE_NAME));
-        assertEquals(403, exception.getErrorCode());
+        var exception = assertThrows(StorageException.class, () -> SERVICE.create(TEST_FILE, "testDirectory/" + FILE_NAME));
+        assertEquals(HttpStatus.FORBIDDEN, exception.getErrorCode());
     }
 
     @Test
     @DisplayName("delete existing file")
     void deleteExistingFile(){
-        service.create(TEST_FILE, FILE_NAME);
-        assertTrue(Files.exists(service.read(FILE_NAME)));
-        service.delete(FILE_NAME);
-        assertFalse(Files.exists(service.read(FILE_NAME)));
+        SERVICE.create(TEST_FILE, FILE_NAME);
+        assertTrue(Files.exists(SERVICE.read(FILE_NAME)));
+        SERVICE.delete(FILE_NAME);
+        assertFalse(Files.exists(SERVICE.read(FILE_NAME)));
     }
 
     @AfterEach
     void tearDown(){
-        assertDoesNotThrow(() ->service.delete(FILE_NAME));
+        assertDoesNotThrow(() ->SERVICE.delete(FILE_NAME));
     }
 
 }

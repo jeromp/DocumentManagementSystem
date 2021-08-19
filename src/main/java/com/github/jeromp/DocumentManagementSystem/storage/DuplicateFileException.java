@@ -1,8 +1,10 @@
 package com.github.jeromp.DocumentManagementSystem.storage;
 
+import org.springframework.http.HttpStatus;
+
 public class DuplicateFileException extends StorageException {
 
-    public DuplicateFileException(String message, int errorCode){
-        super(message, errorCode);
+    public DuplicateFileException(HttpStatus errorCode, String message){
+        super(errorCode, message, null);
     }
 }
