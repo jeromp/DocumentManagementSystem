@@ -11,13 +11,21 @@ It's built with Spring Boot.
 
 ## Run Application
 
-Add in application.properties your database and credentials
+Add in application.yaml your database and credentials. You can also specify the root path of your file server.
 
 ```
-spring.datasource.url=
-spring.datasource.username=
-spring.datasource.password=
+spring:
+  datasource:
+    url: YOUR_URL
+    username: YOUR_USERNAME
+    password: YOUR_PASSWORD
+...    
+storage:
+  files:
+    rootPath: YOUR_PATH
 ```
+
+
 
 ### 1.1 Hello World
 [http://localhost:8080/](http://localhost:8080/)

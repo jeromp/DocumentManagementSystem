@@ -16,5 +16,6 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-files:
-  root-folder: /FileExplorer/
+storage:
+  files:
+    rootPath: /FileExplorer
