@@ -42,7 +42,7 @@ public class DocumentApiRestController {
         } catch (IllegalArgumentException exception) {
             throw new DocumentNotFoundException("Id not valid");
         }
-        var document = this.documentRepository.findById(uuid);
+        var document = this.documentRepository.findByUuid(uuid);
         if(document.isEmpty()) {
             throw new DocumentNotFoundException("Document with id: " + id + " not found.");
         }
@@ -56,7 +56,7 @@ public class DocumentApiRestController {
         this.documentStorageService.create(file, fileName);
         Document document = new Document();
         document.setTitle(title);
-        document.setId(uuid);
+        document.setUuid(uuid);
         document.setPath(fileName);
         this.documentRepository.save(document);
         return document;

@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,14 +35,20 @@ class MetaRepositoryTest {
     private static final LocalDateTime META_FILE_CREATED = LocalDateTime.now();
 
     private Meta meta;
+    private Document document;
 
     @BeforeEach
     void setUp(){
-        Document document = this.documentRepository.findAll().get(0);
+        document = new Document();
+        Document document2 = this.documentRepository.findAll().get(0);
+        document.setUuid(UUID.randomUUID());
+        document.setPath(document2.getPath());
+        document.setTitle(document2.getTitle());
+        document = this.documentRepository.save(document);
         this.meta = new Meta();
         this.meta.setDescription(this.META_DESCRIPTION);
         this.meta.setDocumentCreated(this.META_FILE_CREATED);
-        this.meta.setId(document.getId());
+        this.meta.setDocument(document);
         this.meta = this.metaRepository.save(meta);
     }
 
@@ -54,7 +61,7 @@ class MetaRepositoryTest {
     @Test
     @DisplayName("Test if inserted Meta is complete")
     void findById(){
-        var meta2 = this.metaRepository.findById(this.meta.getId()).get();
+        var meta2 = this.metaRepository.findById(this.meta.getId()).orElseThrow();
         assertAll("all meta properties",
                 () -> assertEquals(meta.getDescription(), meta2.getDescription()),
                 () -> assertEquals(meta.getDocumentCreated(), meta2.getDocumentCreated()),
@@ -65,5 +72,6 @@ class MetaRepositoryTest {
     @AfterEach
     void tearDown(){
         this.metaRepository.delete(this.meta);
+        this.documentRepository.delete(this.document);
     }
 }

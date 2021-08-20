@@ -25,6 +25,9 @@ public class Document extends BaseEntity {
     @Column(name="path")
     private String path;
 
+    @OneToOne(mappedBy = "document")
+    private Meta meta;
+
     public Long getId(){
         return this.id;
     }

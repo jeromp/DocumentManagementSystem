@@ -49,7 +49,7 @@ class DocumentRepositoryTest {
     @Test
     @DisplayName("Test if inserted Document is complete")
     void findById(){
-        Document document2 = this.repository.findByUuid(this.document1.getUuid());
+        var document2 = this.repository.findByUuid(this.document1.getUuid()).orElseThrow();
         assertAll("all properties",
                 () -> assertEquals(document1.getId(), document2.getId()),
                 () -> assertEquals(document1.getUuid(), document2.getUuid()),

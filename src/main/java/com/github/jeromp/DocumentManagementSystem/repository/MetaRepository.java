@@ -8,6 +8,6 @@ import java.util.UUID;
 import java.util.List;
 
 @Repository
-public interface MetaRepository extends JpaRepository<Meta, UUID> {
+public interface MetaRepository extends JpaRepository<Meta, Long> {
     public Meta findByDocument(Document document);
 }

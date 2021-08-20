@@ -13,11 +13,12 @@ Model class for Meta data
 public class Meta extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name="id")
     private Long id;
 
-    @OneToOne
-    @Column(name="document_id")
+    @OneToOne(optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "document_id", referencedColumnName = "id")
     private Document document;
 
     @Column(name="description")
