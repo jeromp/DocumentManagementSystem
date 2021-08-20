@@ -6,9 +6,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties
-@ConfigurationProperties("storage")
+@ConfigurationProperties(prefix = "storage.files")
 public class StorageProperties {
-    private String rootPath = "/FileServer";
+
+    private String rootPath;
 
     public String getRootPath() {
         return rootPath;
