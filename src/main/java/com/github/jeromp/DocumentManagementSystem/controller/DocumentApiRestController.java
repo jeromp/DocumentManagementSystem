@@ -1,16 +1,11 @@
 package com.github.jeromp.DocumentManagementSystem.controller;
 
-import com.github.jeromp.DocumentManagementSystem.exception.DocumentNotFoundException;
 import com.github.jeromp.DocumentManagementSystem.model.Document;
 import com.github.jeromp.DocumentManagementSystem.repository.DocumentRepository;
 import com.github.jeromp.DocumentManagementSystem.storage.DocumentStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -40,11 +35,11 @@ public class DocumentApiRestController {
         try {
             uuid = UUID.fromString(id);
         } catch (IllegalArgumentException exception) {
-            throw new DocumentNotFoundException("Id not valid");
+            throw new DocumentNotFoundException(HttpStatus.BAD_REQUEST, "Id not valid");
         }
         var document = this.documentRepository.findByUuid(uuid);
         if(document.isEmpty()) {
-            throw new DocumentNotFoundException("Document with id: " + id + " not found.");
+            throw new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document with id: " + id + " not found.");
         }
         return document.get();
     }
@@ -64,13 +59,13 @@ public class DocumentApiRestController {
 
     @ExceptionHandler(DocumentNotFoundException.class)
     public void handleDocumentNotFound(DocumentNotFoundException exception, HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.NOT_FOUND.value(), exception.getMessage());
+        response.sendError(exception.getErrorCode().value(), exception.getMessage());
     }
 
     private String createFileName(String oldFile, String title, UUID id){
         var extension = Optional.ofNullable(oldFile)
                 .filter(f -> f.contains("."))
-                .map(f -> f.substring(oldFile.lastIndexOf(".") + 1));
+                .map(f -> f.substring(oldFile.lastIndexOf(".")));
         return title + "-" + id + "." + extension.get();
     }
 }
