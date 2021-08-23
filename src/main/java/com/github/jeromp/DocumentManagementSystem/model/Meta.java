@@ -17,7 +17,7 @@ public class Meta extends BaseEntity {
     @Column(name="id")
     private Long id;
 
-    @OneToOne(optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(optional = false, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id", referencedColumnName = "id")
     private Document document;
 
@@ -43,9 +43,9 @@ public class Meta extends BaseEntity {
         this.documentCreated = documentCreated;
     }
 
-    public Document getDocument() {
+    /*public Document getDocument() {
         return document;
-    }
+    }*/
 
     public void setDocument(Document document) {
         this.document = document;

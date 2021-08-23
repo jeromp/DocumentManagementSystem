@@ -25,7 +25,7 @@ public class Document extends BaseEntity {
     @Column(name="path")
     private String path;
 
-    @OneToOne(mappedBy = "document")
+    @OneToOne(mappedBy = "document", fetch = FetchType.EAGER)
     private Meta meta;
 
     public Long getId(){
@@ -54,6 +54,10 @@ public class Document extends BaseEntity {
 
     public String getPath(){
         return this.path;
+    }
+
+    public Meta getMeta() {
+        return this.meta;
     }
 
     @Override

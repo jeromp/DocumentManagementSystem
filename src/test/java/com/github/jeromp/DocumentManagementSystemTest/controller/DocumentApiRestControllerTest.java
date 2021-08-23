@@ -2,7 +2,9 @@ package com.github.jeromp.DocumentManagementSystem;
 
 import com.github.jeromp.DocumentManagementSystem.AbstractApiRestControllerTest;
 import com.github.jeromp.DocumentManagementSystem.model.Document;
+import com.github.jeromp.DocumentManagementSystem.model.Meta;
 import com.github.jeromp.DocumentManagementSystem.repository.DocumentRepository;
+import com.github.jeromp.DocumentManagementSystem.repository.MetaRepository;
 import com.github.jeromp.DocumentManagementSystem.storage.DocumentStorageService;
 import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.AfterEach;
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -39,11 +42,16 @@ class DocumentApiRestControllerTest extends AbstractApiRestControllerTest {
     @Autowired
     private DocumentRepository documentRepository;
 
+    @Autowired
+    private MetaRepository metaRepository;
+
     private DocumentStorageService documentStorageService;
 
     private static final String BASE_URI = "/documents/";
+    private static final String EXAMPLE_TIME = "2021-08-01T12:00:00.000000";
     private UUID uuid;
     private Document document;
+    private Meta meta;
 
     @Override
     @BeforeEach
@@ -55,6 +63,11 @@ class DocumentApiRestControllerTest extends AbstractApiRestControllerTest {
         this.uuid = UUID.randomUUID();
         this.document.setUuid(this.uuid);
         this.document = this.documentRepository.save(document);
+        this.meta = new Meta();
+        this.meta.setDescription("Example description is here.");
+        this.meta.setDocumentCreated(LocalDateTime.parse(EXAMPLE_TIME));
+        this.meta.setDocument(document);
+        this.meta = this.metaRepository.save(meta);
     }
 
     @Test
@@ -69,7 +82,9 @@ class DocumentApiRestControllerTest extends AbstractApiRestControllerTest {
         assertAll("all properties",
                 () -> assertEquals(document.getTitle(), responseDocument.getTitle()),
                 () -> assertEquals(document.getUuid(), responseDocument.getUuid()),
-                () -> assertEquals(document.getPath(), responseDocument.getPath())
+                () -> assertEquals(document.getPath(), responseDocument.getPath()),
+                () -> assertEquals(meta.getDocumentCreated(), responseDocument.getMeta().getDocumentCreated()),
+                () -> assertEquals(meta.getDescription(), responseDocument.getMeta().getDescription())
         );
     }
 
@@ -126,6 +141,7 @@ class DocumentApiRestControllerTest extends AbstractApiRestControllerTest {
 
     @AfterEach
     void tearDown(){
+        this.metaRepository.delete(this.meta);
         this.documentRepository.delete(this.document);
     }
 }
