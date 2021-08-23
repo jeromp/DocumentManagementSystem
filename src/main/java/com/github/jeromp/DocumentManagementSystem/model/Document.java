@@ -60,6 +60,10 @@ public class Document extends BaseEntity {
         return this.meta;
     }
 
+    public void setMeta(Meta meta){
+        this.meta = meta;
+    }
+
     @Override
     public String toString(){
         return "ID: " + this.id + " Title: " + this.title;

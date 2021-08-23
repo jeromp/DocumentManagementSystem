@@ -56,7 +56,7 @@ public class DocumentApiRestController {
     @PostMapping(value = "/")
     public Document post(@RequestPart("title") @NotNull String title,
                          @RequestPart(name = "description", required = false) String description,
-                         @RequestPart(name = "document_created", required = false) String isoDocumentCreated /*@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime documentCreated*/,
+                         @RequestPart(name = "document_created", required = false) String isoDocumentCreated,
                          @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file){
         UUID uuid = UUID.randomUUID();
         String fileName = createFileName(file.getOriginalFilename(), title, uuid);
@@ -65,13 +65,14 @@ public class DocumentApiRestController {
         document.setTitle(title);
         document.setUuid(uuid);
         document.setPath(fileName);
-        this.documentRepository.save(document);
+        document = this.documentRepository.save(document);
         if(description != null || isoDocumentCreated != null){
             Meta meta = new Meta();
             meta.setDocument(document);
             meta.setDocumentCreated(LocalDateTime.parse(isoDocumentCreated));
             meta.setDescription(description);
-            this.metaRepository.save(meta);
+            meta = this.metaRepository.save(meta);
+            document.setMeta(meta);
         }
         return document;
     }

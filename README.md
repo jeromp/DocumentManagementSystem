@@ -32,14 +32,14 @@ storage:
 
 Multipart Form:
 ```
-file: ADD_YOUR_FILE
-title: YOUR_TITLE
+file: FILE
+title: STRING
+document_created: STRING (ISO DateTime, optional)
+description: STRING (optional)
 ```
 
-#### 1.1.1 Get Document by ID
+#### 1.1.2 Get Document by ID
 [http://localhost:8080/documents/{id}](http://localhost:8080/documents/)
-
-
 
 
 ### 1.2 Hello World
