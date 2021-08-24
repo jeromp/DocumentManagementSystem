@@ -25,7 +25,7 @@ public class Document extends BaseEntity {
     @Column(name="path")
     private String path;
 
-    @OneToOne(mappedBy = "document", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "document", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Meta meta;
 
     public Long getId(){

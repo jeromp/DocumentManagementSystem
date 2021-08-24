@@ -1,12 +1,11 @@
 package com.github.jeromp.DocumentManagementSystem;
 
-import com.github.jeromp.DocumentManagementSystem.AbstractApiRestControllerTest;
 import com.github.jeromp.DocumentManagementSystem.model.Document;
 import com.github.jeromp.DocumentManagementSystem.model.Meta;
 import com.github.jeromp.DocumentManagementSystem.repository.DocumentRepository;
-import com.github.jeromp.DocumentManagementSystem.repository.MetaRepository;
 import com.github.jeromp.DocumentManagementSystem.storage.DocumentStorageService;
-import org.aspectj.lang.annotation.After;
+import com.github.jeromp.DocumentManagementSystem.AbstractApiRestControllerTest;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,22 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.codec.multipart.Part;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,11 +37,6 @@ class DocumentApiRestControllerTest extends AbstractApiRestControllerTest {
     @Autowired
     private DocumentRepository documentRepository;
 
-    @Autowired
-    private MetaRepository metaRepository;
-
-    private DocumentStorageService documentStorageService;
-
     private static final String BASE_URI = "/documents/";
     private static final String EXAMPLE_TIME = "2021-08-01T12:00:00.000000";
     private UUID uuid;
@@ -55,19 +45,19 @@ class DocumentApiRestControllerTest extends AbstractApiRestControllerTest {
 
     @Override
     @BeforeEach
-    protected void setUp(){
+    protected void setUp() {
         super.setUp();
         this.document = new Document();
         this.document.setTitle("Example document");
         this.document.setPath("example_path/document.txt");
         this.uuid = UUID.randomUUID();
         this.document.setUuid(this.uuid);
-        this.document = this.documentRepository.save(document);
         this.meta = new Meta();
         this.meta.setDescription("Example description is here.");
         this.meta.setDocumentCreated(LocalDateTime.parse(EXAMPLE_TIME));
-        this.meta.setDocument(document);
-        this.meta = this.metaRepository.save(meta);
+        this.meta.setDocument(this.document);
+        this.document.setMeta(meta);
+        this.document = this.documentRepository.save(document);
     }
 
     @Test
@@ -102,8 +92,36 @@ class DocumentApiRestControllerTest extends AbstractApiRestControllerTest {
     @DisplayName("Test post request")
     void postDocument() throws Exception {
         String testTitle = "postDocument";
-        MockMultipartFile file
-                = new MockMultipartFile(
+        String testDescription = "post document description";
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "hello.txt",
+                MediaType.TEXT_PLAIN_VALUE,
+                "Hello, World!".getBytes()
+        );
+        byte[] documentTitle = testTitle.getBytes(StandardCharsets.UTF_8);
+        byte[] documentDescription = testDescription.getBytes(StandardCharsets.UTF_8);
+        byte[] documentCreated = EXAMPLE_TIME.getBytes(StandardCharsets.UTF_8);
+        MockPart mockTitle = new MockPart("title", documentTitle);
+        MockPart mockDescription = new MockPart("description", documentDescription);
+        MockPart mockDocumentCreated = new MockPart("document_created", documentCreated);
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        MvcResult mvcResult = mockMvc.perform(multipart(BASE_URI).file(file).part(mockTitle).part(mockDescription).part(mockDocumentCreated))
+                .andExpect(status().isOk()).andReturn();
+        String response = mvcResult.getResponse().getContentAsString();
+        Document responseDocument = super.mapFromJson(response, Document.class);
+        assertAll("all properties",
+                () -> assertEquals(testTitle, responseDocument.getTitle()),
+                () -> assertEquals(testDescription, responseDocument.getMeta().getDescription()),
+                () -> assertEquals(LocalDateTime.parse(EXAMPLE_TIME), responseDocument.getMeta().getDocumentCreated())
+        );
+    }
+
+    @Test
+    @DisplayName("Test post request without meta data")
+    void postDocumentWithoutMeta() throws Exception {
+        String testTitle = "postDocument";
+        MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "hello.txt",
                 MediaType.TEXT_PLAIN_VALUE,
@@ -111,37 +129,33 @@ class DocumentApiRestControllerTest extends AbstractApiRestControllerTest {
         );
         byte[] documentTitle = "postDocument".getBytes(StandardCharsets.UTF_8);
         MockPart mockTitle = new MockPart("title", documentTitle);
-        MockMvc mockMvc
-                = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         MvcResult mvcResult = mockMvc.perform(multipart(BASE_URI).file(file).part(mockTitle))
                 .andExpect(status().isOk()).andReturn();
         String response = mvcResult.getResponse().getContentAsString();
         Document responseDocument = super.mapFromJson(response, Document.class);
-        assertAll("all properties",
-                () -> assertEquals(testTitle, responseDocument.getTitle())
+        assertAll("all properties correct",
+                () -> assertEquals(testTitle, responseDocument.getTitle()),
+                () -> assertNull(responseDocument.getMeta())
         );
     }
 
     @Test
     @DisplayName("Test post request without required fields")
     void postDocumentWithoutRequiredFields() throws Exception {
-        String testTitle = "postDocument";
-        MockMultipartFile file
-                = new MockMultipartFile(
+        MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "hello.txt",
                 MediaType.TEXT_PLAIN_VALUE,
                 "Hello, World!".getBytes()
         );
-        MockMvc mockMvc
-                = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         MvcResult mvcResult = mockMvc.perform(multipart(BASE_URI).file(file)).andReturn();
-        assertEquals(400, mvcResult.getResponse().getStatus());
+        assertEquals(412, mvcResult.getResponse().getStatus());
     }
 
     @AfterEach
     void tearDown(){
-        this.metaRepository.delete(this.meta);
         this.documentRepository.delete(this.document);
     }
 }

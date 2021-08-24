@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
-    public Optional<Document> findByUuid(UUID uuid);
+    Optional<Document> findByUuid(UUID uuid);
 }
