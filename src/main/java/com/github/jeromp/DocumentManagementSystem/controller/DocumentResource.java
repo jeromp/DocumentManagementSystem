@@ -15,17 +15,17 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/documents")
-public class DocumentApiRestController {
+public class DocumentResource {
 
     private DocumentService service;
 
     @Autowired
-    public DocumentApiRestController(DocumentService service) {
+    public DocumentResource(DocumentService service) {
         this.service = service;
     }
 
     @GetMapping("/{id}")
-    public Document get(@PathVariable(value="id") String id){
+    public Document get(@PathVariable(value = "id") String id) {
         return service.read(id);
     }
 

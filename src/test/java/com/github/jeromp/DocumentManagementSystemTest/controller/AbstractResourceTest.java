@@ -17,13 +17,13 @@ import java.io.IOException;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public abstract class AbstractApiRestControllerTest {
+public abstract class AbstractResourceTest {
     protected MockMvc mvc;
 
     @Autowired
     protected WebApplicationContext webApplicationContext;
 
-    protected void setUp(){
+    protected void setUp() {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 

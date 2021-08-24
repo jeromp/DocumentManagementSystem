@@ -4,7 +4,7 @@ import com.github.jeromp.DocumentManagementSystem.model.Document;
 import com.github.jeromp.DocumentManagementSystem.model.Meta;
 import com.github.jeromp.DocumentManagementSystem.repository.DocumentRepository;
 import com.github.jeromp.DocumentManagementSystem.storage.DocumentStorageService;
-import com.github.jeromp.DocumentManagementSystem.AbstractApiRestControllerTest;
+import com.github.jeromp.DocumentManagementSystem.AbstractResourceTest;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DisplayName("Document REST Api Controller Tests")
-class DocumentApiRestControllerTest extends AbstractApiRestControllerTest {
+class DocumentResourceTest extends AbstractResourceTest {
 
     @Autowired
     private DocumentRepository documentRepository;
@@ -86,7 +86,6 @@ class DocumentApiRestControllerTest extends AbstractApiRestControllerTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
-
 
     @Test
     @DisplayName("Test post request")
