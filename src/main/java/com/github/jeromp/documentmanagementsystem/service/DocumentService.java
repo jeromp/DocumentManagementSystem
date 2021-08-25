@@ -27,9 +27,8 @@ public class DocumentService {
     }
 
     public Document read(String uuidString) {
-        UUID uuid;
         try {
-            uuid = UUID.fromString(uuidString);
+            UUID uuid = UUID.fromString(uuidString);
             return this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document with id: " + uuidString + " not found."));
         } catch (IllegalArgumentException exception) {
             throw new DocumentNotFoundException(HttpStatus.BAD_REQUEST, "Id not valid");

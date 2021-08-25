@@ -17,13 +17,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity handleMissingServletRequestPart(MissingServletRequestPartException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = exception.getRequestPartName() + " parameter is missing";
         var errorDto = new ErrorDto(HttpStatus.PRECONDITION_FAILED, exception.getLocalizedMessage(), error);
-        return new ResponseEntity<Object>(errorDto, new HttpHeaders(), errorDto.getStatus());
+        return new ResponseEntity<ErrorDto>(errorDto, new HttpHeaders(), errorDto.getStatus());
     }
 
     @ExceptionHandler(DocumentNotFoundException.class)
     protected ResponseEntity handleDocumentNotFound(DocumentNotFoundException exception) {
         String error = "Document not found";
         var errorDto = new ErrorDto(HttpStatus.NOT_FOUND, exception.getMessage(), error);
-        return new ResponseEntity<Object>(errorDto, new HttpHeaders(), errorDto.getStatus());
+        return new ResponseEntity<ErrorDto>(errorDto, new HttpHeaders(), errorDto.getStatus());
     }
 }
