@@ -22,21 +22,22 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @DisplayName("DocumentRepositoryTest")
 class DocumentRepositoryTest {
-    @Autowired
-    private DocumentRepository repository;
-
-    private Document document1;
     private static final String DOCUMENT_TITLE = "Test Document";
     private static final String DOCUMENT_PATH = "test_path";
     private static final UUID DOCUMENT_UUID = UUID.randomUUID();
 
+    @Autowired
+    private DocumentRepository repository;
+
+    private Document document1;
+
     @BeforeEach
-    void setUp(){
+    void setUp() {
         this.document1 = new Document();
         this.document1.setUuid(DOCUMENT_UUID);
         this.document1.setTitle(this.DOCUMENT_TITLE);
         this.document1.setPath(this.DOCUMENT_PATH);
-        this.document1 = this.repository.save(document1);
+        assertNotNull(this.document1 = this.repository.save(document1));
     }
 
     @Test
@@ -60,7 +61,7 @@ class DocumentRepositoryTest {
 
     @AfterEach
     void tearDown(){
-        this.repository.delete(this.document1);
+        assertDoesNotThrow(() -> this.repository.delete(this.document1));
     }
 
 }

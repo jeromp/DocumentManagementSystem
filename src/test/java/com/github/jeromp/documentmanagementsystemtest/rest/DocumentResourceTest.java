@@ -31,12 +31,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DisplayName("Document REST Api Controller Tests")
 class DocumentResourceTest extends AbstractResourceTest {
+    private static final String BASE_URI = "/documents/";
+    private static final String EXAMPLE_TIME = "2021-08-01T12:00:00.000000";
 
     @Autowired
     private DocumentRepository documentRepository;
 
-    private static final String BASE_URI = "/documents/";
-    private static final String EXAMPLE_TIME = "2021-08-01T12:00:00.000000";
     private UUID uuid;
     private Document document;
     private Meta meta;
@@ -55,7 +55,7 @@ class DocumentResourceTest extends AbstractResourceTest {
         this.meta.setDocumentCreated(LocalDateTime.parse(EXAMPLE_TIME));
         this.meta.setDocument(this.document);
         this.document.setMeta(meta);
-        this.document = this.documentRepository.save(document);
+        assertNotNull(this.document = this.documentRepository.save(document));
     }
 
     @Test
@@ -153,6 +153,6 @@ class DocumentResourceTest extends AbstractResourceTest {
 
     @AfterEach
     void tearDown(){
-        this.documentRepository.delete(this.document);
+        assertDoesNotThrow(() -> this.documentRepository.delete(this.document));
     }
 }

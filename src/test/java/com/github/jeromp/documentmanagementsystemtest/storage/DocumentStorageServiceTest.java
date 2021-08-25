@@ -19,21 +19,20 @@ import java.nio.file.Files;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {StorageProperties.class, DocumentStorageService.class })
+@ContextConfiguration(classes = {StorageProperties.class, DocumentStorageService.class})
 @TestPropertySource(properties = {"storage.files.rootPath=/FileExporer"})
 @DisplayName("Document Storage Service unit test")
 public class DocumentStorageServiceTest {
+    private static final String FILE_NAME = "test.txt";
+    private static final MockMultipartFile TEST_FILE = new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
+            "Hello, World".getBytes());
 
     @Autowired
     private DocumentStorageService service;
 
-    private static final String FILE_NAME = "test.txt";
-    private static final MockMultipartFile TEST_FILE = new MockMultipartFile("test", "otherFileName.txt", MediaType.TEXT_PLAIN_VALUE,
-                "Hello, World".getBytes());
-
     @Test
     @DisplayName("load non existent file")
-    void loadNonExistent(){
+    void loadNonExistent() {
         assertFalse(Files.exists(service.read("non-existent.txt")));
     }
 

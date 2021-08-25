@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -22,13 +23,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @DisplayName("Document REST Api Controller Tests")
 class DocumentServiceTest {
+    private static final String EXAMPLE_TIME = "2021-08-01T12:00:00.000000";
+
     @Autowired
     private DocumentService documentService;
 
     @Autowired
     private DocumentRepository documentRepository;
 
-    private static final String EXAMPLE_TIME = "2021-08-01T12:00:00.000000";
     private Document document;
 
     @BeforeEach
@@ -43,7 +45,7 @@ class DocumentServiceTest {
         meta.setDocumentCreated(LocalDateTime.parse(EXAMPLE_TIME));
         meta.setDocument(this.document);
         this.document.setMeta(meta);
-        this.document = this.documentRepository.save(document);
+        assertNotNull(this.document = this.documentRepository.save(document));
     }
 
     @Test
@@ -63,7 +65,8 @@ class DocumentServiceTest {
     @DisplayName("Test throw error for document with incorrect id")
     void readByIncorrectId() {
         var uuid = UUID.randomUUID();
-        assertThrows(DocumentNotFoundException.class, () -> documentService.read(uuid.toString()));
+        var exception = assertThrows(DocumentNotFoundException.class, () -> documentService.read(uuid.toString()));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getErrorCode());
     }
 
     @Test
@@ -87,6 +90,6 @@ class DocumentServiceTest {
 
     @AfterEach
     void tearDown() {
-        this.documentRepository.delete(this.document);
+        assertDoesNotThrow(() -> this.documentRepository.delete(this.document));
     }
 }

@@ -21,7 +21,6 @@ class DocumentManagementSystemTests {
 	@Autowired
 	private MockMvc mvc;
 
-
 	@Test
 	@DisplayName("Context loads")
 	void contextLoads() {
