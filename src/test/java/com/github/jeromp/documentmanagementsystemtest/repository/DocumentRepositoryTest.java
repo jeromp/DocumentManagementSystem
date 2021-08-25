@@ -29,15 +29,15 @@ class DocumentRepositoryTest {
     @Autowired
     private DocumentRepository repository;
 
-    private Document document1;
+    private Document perstistedDocUnderTest;
 
     @BeforeEach
     void setUp() {
-        this.document1 = new Document();
-        this.document1.setUuid(DOCUMENT_UUID);
-        this.document1.setTitle(this.DOCUMENT_TITLE);
-        this.document1.setPath(this.DOCUMENT_PATH);
-        assertNotNull(this.document1 = this.repository.save(document1));
+        this.perstistedDocUnderTest = new Document();
+        this.perstistedDocUnderTest.setUuid(DOCUMENT_UUID);
+        this.perstistedDocUnderTest.setTitle(this.DOCUMENT_TITLE);
+        this.perstistedDocUnderTest.setPath(this.DOCUMENT_PATH);
+        assertNotNull(this.perstistedDocUnderTest = this.repository.save(perstistedDocUnderTest));
     }
 
     @Test
@@ -49,19 +49,19 @@ class DocumentRepositoryTest {
     @Test
     @DisplayName("Test if inserted Document is complete")
     void findById(){
-        var document2 = this.repository.findByUuid(this.document1.getUuid()).orElseThrow();
+        var document2 = this.repository.findByUuid(this.perstistedDocUnderTest.getUuid()).orElseThrow();
         assertAll("all properties",
-                () -> assertEquals(document1.getId(), document2.getId()),
-                () -> assertEquals(document1.getUuid(), document2.getUuid()),
-                () -> assertEquals(document1.getTitle(), document2.getTitle()),
-                () -> assertEquals(document1.getPath(), document2.getPath()),
-                () -> assertEquals(document1.getCreated(), document2.getCreated())
-                );
+                () -> assertEquals(perstistedDocUnderTest.getId(), document2.getId()),
+                () -> assertEquals(perstistedDocUnderTest.getUuid(), document2.getUuid()),
+                () -> assertEquals(perstistedDocUnderTest.getTitle(), document2.getTitle()),
+                () -> assertEquals(perstistedDocUnderTest.getPath(), document2.getPath()),
+                () -> assertEquals(perstistedDocUnderTest.getCreated(), document2.getCreated())
+        );
     }
 
     @AfterEach
     void tearDown(){
-        assertDoesNotThrow(() -> this.repository.delete(this.document1));
+        assertDoesNotThrow(() -> this.repository.delete(this.perstistedDocUnderTest));
     }
 
 }
