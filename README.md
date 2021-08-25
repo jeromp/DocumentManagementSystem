@@ -26,8 +26,23 @@ storage:
 ```
 
 
+### 1.1 Documents
+#### 1.1.1 Post Document
+[http://localhost:8080/documents/](http://localhost:8080/documents/)
 
-### 1.1 Hello World
+Multipart Form:
+```
+file: FILE
+title: STRING
+document_created: STRING (ISO DateTime, optional)
+description: STRING (optional)
+```
+
+#### 1.1.2 Get Document by ID
+[http://localhost:8080/documents/{id}](http://localhost:8080/documents/)
+
+
+### 1.2 Hello World
 [http://localhost:8080/](http://localhost:8080/)
 
 
