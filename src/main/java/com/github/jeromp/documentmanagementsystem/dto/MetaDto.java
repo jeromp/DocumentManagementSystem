@@ -4,11 +4,6 @@ public class MetaDto {
     private String description;
     private String documentCreated;
 
-    public MetaDto(String description, String documentCreated) {
-        this.description = description;
-        this.documentCreated = documentCreated;
-    }
-
     public String getDescription() {
         return description;
     }

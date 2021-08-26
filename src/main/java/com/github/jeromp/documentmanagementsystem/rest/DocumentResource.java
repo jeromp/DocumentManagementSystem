@@ -1,5 +1,6 @@
 package com.github.jeromp.documentmanagementsystem.rest;
 
+import com.github.jeromp.documentmanagementsystem.dto.DocumentDto;
 import com.github.jeromp.documentmanagementsystem.model.Document;
 import com.github.jeromp.documentmanagementsystem.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +23,15 @@ public class DocumentResource {
     }
 
     @GetMapping("/{id}")
-    public Document get(@PathVariable(value = "id") String id) {
+    public DocumentDto get(@PathVariable(value = "id") String id) {
         return service.read(id);
     }
 
     @PostMapping(value = "/")
-    public Document post(@RequestPart(name = "title") @NotNull String title,
-                         @RequestPart(name = "description", required = false) String description,
-                         @RequestPart(name = "document_created", required = false) String isoDocumentCreated,
-                         @RequestPart("file") @Valid @NotBlank MultipartFile file) {
+    public DocumentDto post(@RequestPart(name = "title") @NotNull String title,
+                            @RequestPart(name = "description", required = false) String description,
+                            @RequestPart(name = "document_created", required = false) String isoDocumentCreated,
+                            @RequestPart("file") @Valid @NotBlank MultipartFile file) {
         return service.create(file, title, description, isoDocumentCreated);
     }
 }

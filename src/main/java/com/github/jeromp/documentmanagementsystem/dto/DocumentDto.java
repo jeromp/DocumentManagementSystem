@@ -5,13 +5,8 @@ import java.util.UUID;
 public class DocumentDto {
     private UUID uuid;
     private String title;
+    private String path;
     private MetaDto meta;
-
-    public DocumentDto(String title, UUID uuid, MetaDto meta) {
-        this.uuid = uuid;
-        this.title = title;
-        this.meta = meta;
-    }
 
     public UUID getUuid() {
         return uuid;
@@ -35,5 +30,13 @@ public class DocumentDto {
 
     public void setMeta(MetaDto meta) {
         this.meta = meta;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

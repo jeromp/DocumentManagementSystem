@@ -133,7 +133,8 @@ class DocumentResourceTest extends AbstractResourceTest {
         Document responseDocument = super.mapFromJson(response, Document.class);
         assertAll("all properties correct",
                 () -> assertEquals(testTitle, responseDocument.getTitle()),
-                () -> assertNull(responseDocument.getMeta())
+                () -> assertNull(responseDocument.getMeta().getDescription()),
+                () -> assertNull(responseDocument.getMeta().getDocumentCreated())
         );
     }
 
