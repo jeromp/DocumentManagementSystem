@@ -34,13 +34,9 @@ public class DocumentService {
     }
 
     public DocumentDto read(String uuidString) {
-        try {
-            UUID uuid = UUID.fromString(uuidString);
-            var document = this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document with id: " + uuidString + " not found."));
-            return this.documentMapper.documentToDocumentDto(document);
-        } catch (IllegalArgumentException exception) {
-            throw new DocumentNotFoundException(HttpStatus.BAD_REQUEST, "Id not valid");
-        }
+        var uuid = UUID.fromString(uuidString);
+        var document = this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document with id: " + uuidString + " not found."));
+        return this.documentMapper.documentToDocumentDto(document);
     }
 
     public DocumentDto create(MultipartFile file, String title, String description, String isoDocumentCreated) {
