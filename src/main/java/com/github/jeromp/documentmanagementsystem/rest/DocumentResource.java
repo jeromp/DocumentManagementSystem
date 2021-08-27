@@ -2,7 +2,7 @@ package com.github.jeromp.documentmanagementsystem.rest;
 
 import com.github.jeromp.documentmanagementsystem.dto.DocumentDto;
 import com.github.jeromp.documentmanagementsystem.service.DocumentService;
-import com.github.jeromp.documentmanagementsystem.utils.UuidIsValid;
+import com.github.jeromp.documentmanagementsystem.utils.IsUuidValid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +24,7 @@ public class DocumentResource {
     }
 
     @GetMapping("/{id}")
-    public DocumentDto get(@PathVariable(value = "id") @UuidIsValid String id) {
+    public DocumentDto get(@PathVariable(value = "id") @IsUuidValid String id) {
         return service.read(id);
     }
 
