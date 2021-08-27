@@ -1,15 +1,13 @@
 package com.github.jeromp.documentmanagementsystem.dto.mapper;
 
 import com.github.jeromp.documentmanagementsystem.dto.DocumentDto;
-import com.github.jeromp.documentmanagementsystem.dto.MetaDto;
 import com.github.jeromp.documentmanagementsystem.model.Document;
 import com.github.jeromp.documentmanagementsystem.model.Meta;
 import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
 
 import java.util.UUID;
 
-@Mapper(componentModel = "spring", uses = {MetaMapper.class})
+@Mapper(config = MappingConfig.class, uses = {MetaMapper.class})
 public interface DocumentMapper {
     Document documentDtoToDocument(DocumentDto documentDto);
 
@@ -17,6 +15,8 @@ public interface DocumentMapper {
 
     @Mapping(target = "meta.description", source = "description")
     @Mapping(target = "meta.documentCreated", source = "documentCreated")
+    @Mapping(target = "created", ignore = true)
+    @Mapping(target = "changed", ignore = true)
     Document mapPartsToDocument(String title, UUID uuid, String path, String description, String documentCreated);
 
     @AfterMapping

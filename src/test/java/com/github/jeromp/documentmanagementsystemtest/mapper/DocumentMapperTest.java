@@ -1,13 +1,10 @@
-package com.github.jeromp.DocumentManagementSystem;
+package com.github.jeromp.documentmanagementsystem;
 
 import com.github.jeromp.documentmanagementsystem.dto.mapper.DocumentMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,13 +14,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @DisplayName("Document Mapper Tests")
 class DocumentMapperTest {
-    static final String TITLE = "MAPSTRUCT";
-    static final String PATH = "path_mapstruct";
-    static final String DESCRIPTION = "this is a mapstruct test";
-    static final String ISO_DATE_STRING = LocalDateTime.now().toString();
+    private static final String TITLE = "MAPSTRUCT";
+    private static final String PATH = "path_mapstruct";
+    private static final String DESCRIPTION = "this is a mapstruct test";
+    private static final String ISO_DATE_STRING = LocalDateTime.now().toString();
 
     @Autowired
-    DocumentMapper documentMapper;
+    private DocumentMapper documentMapper;
 
     @Test
     @DisplayName("test with complete data")
