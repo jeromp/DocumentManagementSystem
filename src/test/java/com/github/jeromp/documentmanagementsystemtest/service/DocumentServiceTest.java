@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @DisplayName("Document REST Api Controller Tests")
 class DocumentServiceTest {
-    private static final String EXAMPLE_TIME = "2021-08-01T12:00:00.000000";
+    private static final String EXAMPLE_TIME = "2021-08-01T12:00:00";
 
     @Autowired
     private DocumentService documentService;
@@ -55,8 +55,7 @@ class DocumentServiceTest {
         assertAll("all properties of readed document",
                 () -> assertEquals(document.getTitle(), readDocument.getTitle()),
                 () -> assertEquals(document.getUuid(), readDocument.getUuid()),
-                () -> assertEquals(document.getPath(), readDocument.getPath()),
-                () -> assertEquals(document.getMeta().getDocumentCreated(), readDocument.getMeta().getDocumentCreated()),
+                () -> assertEquals(EXAMPLE_TIME, readDocument.getMeta().getDocumentCreated()),
                 () -> assertEquals(document.getMeta().getDescription(), readDocument.getMeta().getDescription())
         );
     }
@@ -83,7 +82,7 @@ class DocumentServiceTest {
         var readDocument = assertDoesNotThrow(() -> this.documentService.create(file, testTitle, testDescription, EXAMPLE_TIME));
         assertAll("all properties of readed document",
                 () -> assertEquals(testTitle, readDocument.getTitle()),
-                () -> assertEquals(LocalDateTime.parse(EXAMPLE_TIME), readDocument.getMeta().getDocumentCreated()),
+                () -> assertEquals(EXAMPLE_TIME, readDocument.getMeta().getDocumentCreated()),
                 () -> assertEquals(testDescription, readDocument.getMeta().getDescription())
         );
     }

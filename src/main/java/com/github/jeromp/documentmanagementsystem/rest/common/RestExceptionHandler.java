@@ -10,6 +10,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
+
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -17,6 +19,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity handleMissingServletRequestPart(MissingServletRequestPartException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = exception.getRequestPartName() + " parameter is missing";
         var errorDto = new ErrorDto(HttpStatus.PRECONDITION_FAILED, exception.getLocalizedMessage(), error);
+        return new ResponseEntity<ErrorDto>(errorDto, new HttpHeaders(), errorDto.getStatus());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity handleConstraintViolation(ConstraintViolationException exception) {
+        var errorDto = new ErrorDto(HttpStatus.PRECONDITION_FAILED, exception.getMessage(), exception.getLocalizedMessage());
         return new ResponseEntity<ErrorDto>(errorDto, new HttpHeaders(), errorDto.getStatus());
     }
 

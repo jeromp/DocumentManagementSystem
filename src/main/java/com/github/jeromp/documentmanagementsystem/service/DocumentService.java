@@ -1,5 +1,9 @@
 package com.github.jeromp.documentmanagementsystem.service;
 
+import com.github.jeromp.documentmanagementsystem.dto.DocumentDto;
+import com.github.jeromp.documentmanagementsystem.dto.MetaDto;
+import com.github.jeromp.documentmanagementsystem.dto.mapper.DocumentMapper;
+import com.github.jeromp.documentmanagementsystem.dto.mapper.MetaMapper;
 import com.github.jeromp.documentmanagementsystem.rest.common.DocumentNotFoundException;
 import com.github.jeromp.documentmanagementsystem.model.Document;
 import com.github.jeromp.documentmanagementsystem.model.Meta;
@@ -11,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.Doc;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,41 +24,30 @@ import java.util.UUID;
 public class DocumentService {
     private DocumentRepository documentRepository;
     private DocumentStorageService documentStorageService;
+    private DocumentMapper documentMapper;
 
     @Autowired
-    public DocumentService(DocumentRepository documentRepository, DocumentStorageService documentStorageService) {
+    public DocumentService(DocumentRepository documentRepository, DocumentStorageService documentStorageService, DocumentMapper documentMapper) {
         this.documentRepository = documentRepository;
         this.documentStorageService = documentStorageService;
+        this.documentMapper = documentMapper;
     }
 
-    public Document read(String uuidString) {
-        try {
-            UUID uuid = UUID.fromString(uuidString);
-            return this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document with id: " + uuidString + " not found."));
-        } catch (IllegalArgumentException exception) {
-            throw new DocumentNotFoundException(HttpStatus.BAD_REQUEST, "Id not valid");
-        }
+    public DocumentDto read(String uuidString) {
+        var uuid = UUID.fromString(uuidString);
+        var document = this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document with id: " + uuidString + " not found."));
+        return this.documentMapper.documentToDocumentDto(document);
     }
 
-    public Document create(MultipartFile file, String title, String description, String isoDocumentCreated) {
+    public DocumentDto create(MultipartFile file, String title, String description, String isoDocumentCreated) {
         var uuid = UUID.randomUUID();
         String fileName = createFileName(file.getOriginalFilename(), title, uuid);
         this.documentStorageService.create(file, fileName);
 
-        Document document = new Document();
-        document.setTitle(title);
-        document.setUuid(uuid);
-        document.setPath(fileName);
-        if (description != null || isoDocumentCreated != null) {
-            Meta meta = new Meta();
-            if (isoDocumentCreated != null) {
-                meta.setDocumentCreated(LocalDateTime.parse(isoDocumentCreated));
-            }
-            meta.setDocument(document);
-            meta.setDescription(description);
-            document.setMeta(meta);
-        }
-        return this.documentRepository.save(document);
+        var document = this.documentMapper.mapPartsToDocument(title, uuid, fileName, description, isoDocumentCreated);
+
+        document = this.documentRepository.save(document);
+        return this.documentMapper.documentToDocumentDto(document);
     }
 
     private String createFileName(String oldFile, String title, UUID id) {
