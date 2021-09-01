@@ -29,13 +29,17 @@ public class DocumentResource {
         this.service = service;
     }
 
+    @Operation(
+            summary = "Get document by id",
+            description = "read document by id"
+    )
     @GetMapping("/{id}")
     public DocumentDto get(@PathVariable(value = "id") @UuidIsValid String id) {
         return service.read(id);
     }
 
     @Operation(
-            summary = "Create document",
+            summary = "Post document",
             description = "create document with optional metadata"
     )
     @PostMapping(value = "/", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
