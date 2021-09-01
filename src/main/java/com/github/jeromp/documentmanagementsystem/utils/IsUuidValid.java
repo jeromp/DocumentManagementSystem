@@ -10,7 +10,7 @@ import static java.lang.annotation.ElementType.*;
 @Constraint(validatedBy = StringToUuidValidator.class)
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UuidIsValid {
+public @interface IsUuidValid {
     String message() default "Invalid uuid type";
 
     Class<?>[] groups() default {};

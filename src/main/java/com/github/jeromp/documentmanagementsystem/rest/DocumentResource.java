@@ -34,7 +34,7 @@ public class DocumentResource {
             description = "read document by id"
     )
     @GetMapping("/{id}")
-    public DocumentDto get(@PathVariable(value = "id") @UuidIsValid String id) {
+    public DocumentDto get(@PathVariable(value = "id") @IsUuidValid String id) {
         return service.read(id);
     }
 
