@@ -18,19 +18,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("DocumentManagementSystemTests")
 class DocumentManagementSystemTests {
 
-	@Autowired
-	private MockMvc mvc;
-
 	@Test
 	@DisplayName("Context loads")
 	void contextLoads() {
 	}
 
-	@Test
-	@DisplayName("Example test for hello world request")
-	void getHelloWorld() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.APPLICATION_JSON))
-						.andExpect(status().isOk())
-								.andExpect(content().string(equalTo("Hello World")));
-	}
 }
