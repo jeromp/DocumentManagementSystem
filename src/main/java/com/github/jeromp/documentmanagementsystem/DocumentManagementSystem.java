@@ -13,10 +13,4 @@ public class DocumentManagementSystem {
 		SpringApplication.run(DocumentManagementSystem.class, args);
 	}
 
-	@RequestMapping("/")
-	@ResponseBody
-	String home() {
-		return "Hello World";
-	}
-
 }

@@ -41,9 +41,3 @@ description: STRING (optional)
 #### 1.1.2 Get Document by ID
 [http://localhost:8080/documents/{id}](http://localhost:8080/documents/)
 
-
-### 1.2 Hello World
-[http://localhost:8080/](http://localhost:8080/)
-
-
-
