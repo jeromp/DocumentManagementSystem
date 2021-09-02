@@ -21,19 +21,20 @@ public class DatabaseBootstrap implements InitializingBean {
     }
 
     private void setUpDocumentDatabase() {
-        List<Document> documentList = this.documentRepository.findAll();
-        Document document;
-        if(documentList.size() < 1) {
-            document = new Document();
-            document.setTitle("Sample Document");
-            document.setPath("sample_path");
-            document.setUuid(UUID.randomUUID());
-            Meta meta = new Meta();
-            meta.setDescription("This is a sample description");
-            meta.setDocumentCreated(LocalDateTime.now());
-            meta.setDocument(document);
-            document.setMeta(meta);
-            this.documentRepository.save(document);
-        }
+        var document = this.documentRepository.findAll().stream().findFirst().orElseGet(() -> createNewDocument());
+        documentRepository.save(document);
+    }
+
+    private Document createNewDocument() {
+        Document document = new Document();
+        document.setTitle("Sample Document");
+        document.setPath("sample_path");
+        document.setUuid(UUID.randomUUID());
+        Meta meta = new Meta();
+        meta.setDescription("This is a sample description");
+        meta.setDocumentCreated(LocalDateTime.now());
+        meta.setDocument(document);
+        document.setMeta(meta);
+        return document;
     }
 }

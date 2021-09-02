@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   datasource:
     url: jdbc:postgresql://localhost:5432/documentmanagementsystem
     username: docman
@@ -11,6 +13,7 @@ spring:
     hibernate:
       ddl-auto: update
   flyway:
+    locations: classpath:db/migration/postgres
     baseline-on-migrate: true
     schemas: public
 springdoc:
