@@ -2,7 +2,7 @@ package com.github.jeromp.documentmanagementsystem.rest;
 
 import com.github.jeromp.documentmanagementsystem.dto.DocumentDto;
 import com.github.jeromp.documentmanagementsystem.service.DocumentService;
-import com.github.jeromp.documentmanagementsystem.utils.UuidIsValid;
+import com.github.jeromp.documentmanagementsystem.utils.IsUuidValid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,7 +17,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/documents")
+@RequestMapping(value = "/documents", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "document", description = "Document Api")
 @Validated
 public class DocumentResource {
