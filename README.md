@@ -24,13 +24,14 @@ storage:
   files:
     rootPath: YOUR_PATH
 ```
-
+## 1 API
 
 ### 1.1 Documents
 #### 1.1.1 Post Document
 [http://localhost:8080/documents/](http://localhost:8080/documents/)
 
 Multipart Form:
+
 ```
 file: FILE
 title: STRING
@@ -39,11 +40,9 @@ description: STRING (optional)
 ```
 
 #### 1.1.2 Get Document by ID
+
 [http://localhost:8080/documents/{id}](http://localhost:8080/documents/)
 
+## 2 Swagger UI
 
-### 1.2 Hello World
-[http://localhost:8080/](http://localhost:8080/)
-
-
-
+[http://localhost:8080/swagger-ui.html/](http://localhost:8080/swagger-ui.html)

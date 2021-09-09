@@ -29,7 +29,7 @@ public class ErrorDto {
         return status;
     }
 
-    public int getStatusValue() {
+    public int getCode() {
         return status.value();
     }
 
