@@ -3,7 +3,7 @@ package com.github.jeromp.documentmanagementsystem.rest.resource;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentServicePort;
 import com.github.jeromp.documentmanagementsystem.rest.dto.DocumentDto;
 import com.github.jeromp.documentmanagementsystem.rest.dto.mapper.DocumentDtoMapper;
-import com.github.jeromp.documentmanagementsystem.utils.UuidIsValid;
+import com.github.jeromp.documentmanagementsystem.rest.utils.UuidIsValid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

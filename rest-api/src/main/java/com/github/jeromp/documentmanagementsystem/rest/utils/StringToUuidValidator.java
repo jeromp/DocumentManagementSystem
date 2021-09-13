@@ -3,7 +3,7 @@ package com.github.jeromp.documentmanagementsystem.rest.utils;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class StringToUuidValidator implements ConstraintValidator<com.github.jeromp.documentmanagementsystem.utils.UuidIsValid, String> {
+public class StringToUuidValidator implements ConstraintValidator<com.github.jeromp.documentmanagementsystem.rest.utils.UuidIsValid, String> {
 
     @Override
     public boolean isValid(String uuid, ConstraintValidatorContext context) {

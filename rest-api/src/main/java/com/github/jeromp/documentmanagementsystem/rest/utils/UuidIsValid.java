@@ -1,4 +1,4 @@
-package com.github.jeromp.documentmanagementsystem.utils;
+package com.github.jeromp.documentmanagementsystem.rest.utils;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

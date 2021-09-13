@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Primary;
 
 @Configuration
 @Import(value = {PersistenceConfig.class, RestApiConfig.class})
-public class DocumentConfiguration {
+public class DocumentManagementConfiguration {
 
     @Bean
     @Primary
