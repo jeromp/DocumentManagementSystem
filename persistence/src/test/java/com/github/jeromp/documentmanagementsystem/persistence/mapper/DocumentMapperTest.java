@@ -1,12 +1,11 @@
 package com.github.jeromp.documentmanagementsystem.persistence.mapper;
 
-import com.github.jeromp.documentmanagementsystem.persistence.mapper.DocumentMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +13,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DisplayName("Document Mapper Tests")
 class DocumentMapperTest {
     private static final String TITLE = "MAPSTRUCT";
