@@ -4,6 +4,7 @@ import com.github.jeromp.documentmanagementsystem.business.port.DocumentServiceP
 import com.github.jeromp.documentmanagementsystem.rest.dto.DocumentDto;
 import com.github.jeromp.documentmanagementsystem.rest.dto.mapper.DocumentDtoMapper;
 import com.github.jeromp.documentmanagementsystem.rest.utils.UuidIsValid;
+import com.github.jeromp.documentmanagementsystem.utils.IsUuidValid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,13 +15,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @RestController
-@RequestMapping("/documents")
+@RequestMapping(value = "/documents", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "document", description = "Document Api")
 @Validated
 public class DocumentResource {
