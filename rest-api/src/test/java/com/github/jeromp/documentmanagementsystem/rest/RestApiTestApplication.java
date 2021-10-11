@@ -1,4 +1,4 @@
-package com.github.documentmanagementsystem.rest;
+package com.github.jeromp.documentmanagementsystem.rest;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

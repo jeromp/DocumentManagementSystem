@@ -10,10 +10,11 @@ spring:
         default_schema: public
     hibernate:
       ddl-auto: update
+  flyway:
+    baseline-on-migrate: true
+    schemas: public
+    defaultSchema: public
+    locations: classpath:db/migration/postgres/
 storage:
   files:
     rootPath: /FileExplorer
-flyway:
-  baseline-on-migrate: true
-  schemas: public
-  defaultSchema: public

@@ -1,4 +1,4 @@
-package com.github.jeromp.documentmanagementsystem.application.bootstrap;
+package com.github.jeromp.documentmanagementsystem.persistence.bootstrap;
 
 import com.github.jeromp.documentmanagementsystem.persistence.repository.DocumentRepository;
 import org.springframework.beans.factory.InitializingBean;

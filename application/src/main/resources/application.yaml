@@ -1,27 +1,17 @@
 spring:
-  main:
-    allow-bean-definition-overriding: true
-  profiles:
-    active: dev
   datasource:
     url: jdbc:postgresql://localhost:5432/documentmanagementsystem
     username: docman
     password: thisisadummypassword
-  jpa:
-    properties:
+    jpa:
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          default_schema: public
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        default_schema: public
-    hibernate:
-      ddl-auto: update
-  flyway:
-    locations: classpath:db/migration/postgres
-    baseline-on-migrate: true
-    schemas: public
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    tryItOutEnabled: true
-storage:
-  files:
-    rootPath: /FileExplorer
+        ddl-auto: update
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+

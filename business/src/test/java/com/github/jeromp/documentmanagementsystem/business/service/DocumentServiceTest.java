@@ -1,8 +1,6 @@
 package com.github.jeromp.documentmanagementsystem.business.service;
 
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentPersistencePort;
-import com.github.jeromp.documentmanagementsystem.business.service.DocumentService;
-import com.github.jeromp.documentmanagementsystem.business.service.DocumentServiceException;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import com.github.jeromp.documentmanagementsystem.entity.MetaBo;
 
@@ -11,39 +9,27 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.util.Random;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
-@SpringBootTest
 @ExtendWith(SpringExtension.class)
 class DocumentServiceTest {
     private static final String EXAMPLE_TIME = "2021-08-01T12:00:00";
 
-    @MockBean
+    @Mock
     private DocumentPersistencePort documentPersistencePort;
 
     @InjectMocks
-    @Resource
     private DocumentService documentService;
 
     private DocumentBo documentBo;

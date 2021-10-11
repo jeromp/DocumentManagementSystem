@@ -1,4 +1,4 @@
-package com.github.documentmanagementsystem.rest.resource;
+package com.github.jeromp.documentmanagementsystem.rest.resource;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

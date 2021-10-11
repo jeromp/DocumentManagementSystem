@@ -16,6 +16,7 @@ import java.util.UUID;
 @Service
 public class DocumentService implements DocumentServicePort {
 
+    @Autowired
     private DocumentPersistencePort documentPersistencePort;
 
     @Autowired

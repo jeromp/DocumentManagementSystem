@@ -1,12 +1,8 @@
 package com.github.jeromp.documentmanagementsystem.persistence.config;
 
-import com.github.jeromp.documentmanagementsystem.business.port.DocumentPersistencePort;
-import com.github.jeromp.documentmanagementsystem.persistence.DocumentPersistenceAdapter;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
@@ -15,8 +11,4 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = {"com.github.jeromp.documentmanagementsystem.persistence"})
 public class PersistenceConfig {
 
-    @Bean
-    public DocumentPersistencePort documentPersistence() {
-        return new DocumentPersistenceAdapter();
-    }
 }

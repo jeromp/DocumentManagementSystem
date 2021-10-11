@@ -1,13 +1,12 @@
-package com.github.documentmanagementsystem.rest.mapper;
+package com.github.jeromp.documentmanagementsystem.rest.dto.mapper;
 
-import com.github.jeromp.documentmanagementsystem.business.port.DocumentServicePort;
-import com.github.jeromp.documentmanagementsystem.rest.dto.mapper.DocumentDtoMapper;
+import com.github.jeromp.documentmanagementsystem.rest.RestApiTestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
@@ -16,16 +15,14 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Import(RestApiTestConfig.class)
 @ExtendWith(SpringExtension.class)
-@DisplayName("Document Mapper Tests")
+@DisplayName("DocumentDto Mapper Tests")
 class DocumentDtoMapperTest {
     private static final String TITLE = "MAPSTRUCT";
     private static final String PATH = "path_mapstruct";
     private static final String DESCRIPTION = "this is a mapstruct test";
     private static final String ISO_DATE_STRING = LocalDateTime.now().toString();
-
-    @MockBean
-    private DocumentServicePort service;
 
     @Autowired
     private DocumentDtoMapper documentDtoMapper;
