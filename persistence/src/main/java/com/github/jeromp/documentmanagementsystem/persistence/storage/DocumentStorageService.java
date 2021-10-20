@@ -40,7 +40,7 @@ public class DocumentStorageService implements CrudStorageService {
 
     @Override
     public void create(InputStream inputStream, String fileName) {
-        try {
+        try (InputStream iS = inputStream) {
             Path destination = this.getPath(fileName);
             if (!destination.getParent().equals(this.rootLocation.toAbsolutePath())) {
                 throw new StorageException(HttpStatus.FORBIDDEN, "Cannot store file outside current directory");
@@ -48,7 +48,7 @@ public class DocumentStorageService implements CrudStorageService {
             if (Files.exists(read(fileName))) {
                 throw new DuplicateFileException(HttpStatus.FORBIDDEN, "File with same name exists.");
             }
-            Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(iS, destination, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new StorageException(HttpStatus.BAD_REQUEST, "Failed to store file.", e);
         }
