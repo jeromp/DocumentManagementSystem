@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/documentmanagementsystem
+    username: docman
+    password: thisisadummypassword
+    jpa:
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          default_schema: public
+      hibernate:
+        ddl-auto: update
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+

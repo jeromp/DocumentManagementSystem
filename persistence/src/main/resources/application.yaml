@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/documentmanagementsystem
+    username: docman
+    password: thisisadummypassword
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: public
+    hibernate:
+      ddl-auto: update
+  flyway:
+    baseline-on-migrate: true
+    schemas: public
+    defaultSchema: public
+    locations: classpath:db/migration/postgres/
+storage:
+  files:
+    rootPath: /FileExplorer
