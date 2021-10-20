@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.github.jeromp.documentmanagementsystem.persistence", "com.github.jeromp.documentmanagementsystem.rest"})
+@ComponentScan(basePackages = "com.github.jeromp.documentmanagementsystem")
 @EnableAutoConfiguration
 public class DocumentManagementSystem {
 

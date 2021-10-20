@@ -2,7 +2,7 @@ package com.github.jeromp.documentmanagementsystem.entity;
 
 import java.util.UUID;
 
-public class DocumentBo extends BaseBo {
+public class DocumentBo implements BaseBo {
     private UUID uuid;
     private String title;
     private String path;

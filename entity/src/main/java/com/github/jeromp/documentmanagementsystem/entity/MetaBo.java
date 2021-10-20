@@ -1,6 +1,6 @@
 package com.github.jeromp.documentmanagementsystem.entity;
 
-public class MetaBo extends BaseBo {
+public class MetaBo implements BaseBo {
     private String description;
     private String documentCreated;
 

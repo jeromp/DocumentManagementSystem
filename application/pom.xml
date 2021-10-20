@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.github.jeromp</groupId>
             <artifactId>rest-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
