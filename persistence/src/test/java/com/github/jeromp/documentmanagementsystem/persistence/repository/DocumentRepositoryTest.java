@@ -2,6 +2,7 @@ package com.github.jeromp.documentmanagementsystem.persistence.repository;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.github.jeromp.documentmanagementsystem.persistence.model.Meta;
@@ -28,11 +29,12 @@ class DocumentRepositoryTest {
     private static final String DOCUMENT_PATH = "test_path";
     private static final UUID DOCUMENT_UUID = UUID.randomUUID();
     private static final String META_DESCRIPTION = "This is a description.";
-    private static final LocalDateTime YESTERDAY_DATE = LocalDateTime.now().minusDays(1);
+
 
     @Autowired
     private DocumentRepository repository;
 
+    private LocalDateTime YESTERDAY_DATE = LocalDateTime.now().minusDays(1);
     private Document persistedDocUnderTest;
     private Meta persistedMetaUnderTest;
 
@@ -72,7 +74,7 @@ class DocumentRepositoryTest {
     @Test
     @DisplayName("Get Documents by Query with title")
     void findByQueryWithTitle() {
-        var documentList = this.repository.findByQuery(DOCUMENT_TITLE, null /*, null, null*/);
+        var documentList = this.repository.findByQuery(Optional.of(DOCUMENT_TITLE), null, null, null);
         assertAll("",
                 () -> assertEquals(1, documentList.size()),
                 () -> assertEquals(DOCUMENT_TITLE, documentList.get(0).getTitle())
@@ -82,7 +84,7 @@ class DocumentRepositoryTest {
     @Test
     @DisplayName("Get Documents by Query with title and description")
     void findByQueryWithTitleAndDescription() {
-        var documentList = this.repository.findByQuery(DOCUMENT_TITLE, META_DESCRIPTION /*, null, null*/);
+        var documentList = this.repository.findByQuery(Optional.of(DOCUMENT_TITLE), Optional.of(META_DESCRIPTION), null, null);
         assertAll("",
                 () -> assertEquals(1, documentList.size()),
                 () -> assertEquals(DOCUMENT_TITLE, documentList.get(0).getTitle()),
@@ -91,16 +93,42 @@ class DocumentRepositoryTest {
     }
 
     @Test
+    @DisplayName("Get Documents by Query with title and description")
+    void findByQueryWithDescription() {
+        var documentList = this.repository.findByQuery(Optional.ofNullable(null), Optional.of(META_DESCRIPTION), null, null);
+        assertAll("",
+                () -> assertEquals(1, documentList.size()),
+                () -> assertEquals(META_DESCRIPTION, documentList.get(0).getMeta().getDescription())
+        );
+    }
+
+    @Test
     @DisplayName("Get Documents by Query with date parameters")
     void findByQueryWithDate() {
+        Optional<String> optionalNull = Optional.ofNullable(null);
+        var documentList = this.repository.findByQuery(optionalNull, optionalNull, Optional.of(YESTERDAY_DATE.minusDays(1)), Optional.of(YESTERDAY_DATE.plusDays(1)));
+        var documentList2 = this.repository.findByQuery(optionalNull, optionalNull, Optional.of(YESTERDAY_DATE), Optional.of(YESTERDAY_DATE.plusDays(1)));
+        var documentList3 = this.repository.findByQuery(optionalNull, optionalNull, Optional.of(YESTERDAY_DATE.minusDays(1)), Optional.of(YESTERDAY_DATE));
+        var documentList4 = this.repository.findByQuery(optionalNull, optionalNull, Optional.of(YESTERDAY_DATE), Optional.of(YESTERDAY_DATE));
+        var documentList5 = this.repository.findByQuery(optionalNull, optionalNull, Optional.of(LocalDateTime.now()), null);
+
+        assertAll("different date ranges",
+                () -> assertEquals(1, documentList.size()),
+                () -> assertEquals(1, documentList2.size()),
+                () -> assertEquals(1, documentList3.size()),
+                () -> assertEquals(1, documentList4.size()),
+                () -> assertEquals(0, documentList5.size())
+        );
 
     }
 
     @Test
     @DisplayName("Get Empty List of Documents after Query")
     void findEmptyListByQuery() {
-        var documentList = this.repository.findByQuery("WRONG_TITLE", null /*, null, null*/);
+        var documentList = this.repository.findByQuery(Optional.of("WRONG_TITLE"), null, null, null);
+        var documentList2 = this.repository.findByQuery(Optional.ofNullable(null), Optional.of("WRONG Description."), null, null);
         assertEquals(0, documentList.size());
+        assertEquals(0, documentList2.size());
     }
 
     @AfterEach
