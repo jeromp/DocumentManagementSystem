@@ -9,13 +9,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -53,5 +56,18 @@ public class DocumentResource {
         var documentBo = this.documentDtoMapper.mapPartsToDocumentBo(title, description, isoDocumentCreated);
         var createdDocument = service.create(file.getInputStream(), file.getOriginalFilename(), documentBo);
         return this.documentDtoMapper.documentBoToDocumentDto(createdDocument);
+    }
+
+    @Operation(
+            summary = "Get documents by query",
+            description = "find documents by search query"
+    )
+    @GetMapping("")
+    public List<DocumentDto> getByQuery(@RequestParam(name = "title", required = false) Optional<String> title,
+                                        @RequestParam(name = "description", required = false) Optional<String> description,
+                                        @RequestParam(name = "documentCreatedAfter", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> isoDocumentCreatedAfter,
+                                        @RequestParam(name = "documentCreatedBefore", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> isoDocumentCreatedBefore) {
+        var queriedDocuments = service.findByQuery(title, description, isoDocumentCreatedAfter, isoDocumentCreatedBefore);
+        return (this.documentDtoMapper.mapDocumentBosToDocumentDtoList(queriedDocuments));
     }
 }
