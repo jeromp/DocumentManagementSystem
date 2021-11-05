@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,13 +16,12 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     Optional<Document> findByUuid(UUID uuid);
 
     @Query("SELECT d, m FROM Document d JOIN d.meta m where " +
-            "(:title is null or d.title = :title) AND " +
-            "(:description is null or m.description = :description) AND " +
-            //"m.documentCreated BETWEEN :documentCreatedAfter AND :documentCreatedBefore")
-            "(:documentCreatedAfter is null or (m.documentCreated >= :documentCreatedAfter)) AND " +
-            "(:documentCreatedBefore is null or (m.documentCreated <= :documentCreatedBefore))")
-    List<Document> findByQuery(@Param("title") Optional<String> title,
-                               @Param("description") Optional<String> description,
-                               @Param("documentCreatedAfter") Optional<LocalDateTime> documentCreatedAfter,
-                               @Param("documentCreatedBefore") Optional<LocalDateTime> documentCreatedBefore);
+            "(:title is null or LOWER(d.title) = LOWER(CAST(:title AS text))) AND " +
+            "(:description is null or LOWER(m.description) LIKE CONCAT('%', LOWER(CAST(:description AS text)), '%')) AND " +
+            "(CAST(:documentCreatedAfter AS timestamp) is null or m.documentCreated >= :documentCreatedAfter) AND " +
+            "(CAST(:documentCreatedBefore AS timestamp) is null or :documentCreatedBefore >= m.documentCreated)")
+    List<Document> findByQuery(@Param("title") String title,
+                               @Param("description") String description,
+                               @Param("documentCreatedAfter") LocalDateTime documentCreatedAfter,
+                               @Param("documentCreatedBefore") LocalDateTime documentCreatedBefore);
 }

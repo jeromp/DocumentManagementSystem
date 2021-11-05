@@ -6,8 +6,10 @@ spring:
     username: sa
     password: password
   jpa:
+    show-sql: true
     properties:
       hibernate:
+        format_sql: true
         dialect: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
@@ -17,3 +19,7 @@ spring:
 storage:
   files:
     rootPath: /FileExporer
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
