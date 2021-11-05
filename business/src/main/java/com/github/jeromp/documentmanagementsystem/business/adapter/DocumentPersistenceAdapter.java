@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -45,6 +47,12 @@ public class DocumentPersistenceAdapter implements DocumentPersistencePort {
     @Override
     public List<DocumentBo> findAll() {
         var documents = this.documentRepository.findAll();
+        return this.documentMapper.mapDocumentsToDocumentBoList(documents);
+    }
+
+    @Override
+    public List<DocumentBo> findByQuery(String title, String description, LocalDateTime documentCreatedAfter, LocalDateTime documentCreatedBefore) {
+        var documents = this.documentRepository.findByQuery(title, description, documentCreatedAfter, documentCreatedBefore);
         return this.documentMapper.mapDocumentsToDocumentBoList(documents);
     }
 

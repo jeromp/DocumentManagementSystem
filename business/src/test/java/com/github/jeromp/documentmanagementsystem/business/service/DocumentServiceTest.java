@@ -17,6 +17,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,6 +28,8 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(SpringExtension.class)
 class DocumentServiceTest {
     private static final String EXAMPLE_TIME = "2021-08-01T12:00:00";
+    private static final String DOCUMENT_TITLE = "Example document";
+    private static final String DOCUMENT_DESCRIPTION = "Example description is here.";
 
     @Mock
     private DocumentPersistencePort documentPersistencePort;
@@ -90,6 +95,21 @@ class DocumentServiceTest {
                 () -> assertEquals(testTitle, readDocument.getTitle()),
                 () -> assertEquals(EXAMPLE_TIME, readDocument.getMeta().getDocumentCreated()),
                 () -> assertEquals(testDescription, readDocument.getMeta().getDescription())
+        );
+    }
+
+    @Test
+    @DisplayName("Test find documents by query")
+    void readByQuery() {
+        String title = DOCUMENT_TITLE;
+        String description = DOCUMENT_DESCRIPTION;
+        var documentBoList = new ArrayList<DocumentBo>();
+        documentBoList.add(this.documentBo);
+        Mockito.when(documentPersistencePort.findByQuery(title, description, null, null)).thenReturn(documentBoList);
+        var queriedDocuments = documentService.findByQuery(Optional.of(title), Optional.of(description), Optional.ofNullable(null), Optional.ofNullable(null));
+        assertAll("all properties of readed document",
+                () -> assertEquals(1, queriedDocuments.size()),
+                () -> assertEquals(documentBo.getUuid(), queriedDocuments.get(0).getUuid())
         );
     }
 

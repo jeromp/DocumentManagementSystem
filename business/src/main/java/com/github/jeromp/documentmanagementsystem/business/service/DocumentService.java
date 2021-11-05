@@ -4,12 +4,15 @@ import com.github.jeromp.documentmanagementsystem.business.port.DocumentPersiste
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentServicePort;
 
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
+import com.zaxxer.hikari.util.UtilityElf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,6 +40,27 @@ public class DocumentService implements DocumentServicePort {
         documentBo.setUuid(uuid);
         documentBo.setPath(fileName);
         return this.documentPersistencePort.save(documentBo);
+    }
+
+    @Override
+    public List<DocumentBo> findByQuery(Optional<String> title, Optional<String> description, Optional<LocalDateTime> documentCreatedAfter, Optional<LocalDateTime> documentCreatedBefore) {
+        String titleString = null;
+        String descriptionString = null;
+        LocalDateTime documentCreatedAfterObj = null;
+        LocalDateTime documentCreatedBeforeObj = null;
+        if (title.isPresent()) {
+            titleString = title.get();
+        }
+        if (description.isPresent()) {
+            descriptionString = description.get();
+        }
+        if (documentCreatedAfter.isPresent()) {
+            documentCreatedAfterObj = documentCreatedAfter.get();
+        }
+        if (documentCreatedBefore.isPresent()) {
+            documentCreatedBeforeObj = documentCreatedBefore.get();
+        }
+        return this.documentPersistencePort.findByQuery(titleString, descriptionString, documentCreatedAfterObj, documentCreatedBeforeObj);
     }
 
     private String createFileName(String oldFile, String title, UUID id) {
