@@ -62,7 +62,7 @@ public class DocumentResource {
             summary = "Get documents by query",
             description = "find documents by search query"
     )
-    @GetMapping("")
+    @GetMapping()
     public List<DocumentDto> getByQuery(@RequestParam(name = "title", required = false) Optional<String> title,
                                         @RequestParam(name = "description", required = false) Optional<String> description,
                                         @RequestParam(name = "documentCreatedAfter", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> isoDocumentCreatedAfter,

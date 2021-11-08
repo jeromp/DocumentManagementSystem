@@ -5,7 +5,6 @@ import com.github.jeromp.documentmanagementsystem.rest.dto.DocumentDto;
 import org.mapstruct.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Mapper(config = MappingConfig.class, uses = {MetaDtoMapper.class})
 public interface DocumentDtoMapper {
