@@ -56,15 +56,34 @@ public class DocumentStorageServiceTest {
 
     @Test
     @DisplayName("delete existing file")
-    void deleteExistingFile(){
+    void deleteExistingFile() {
         service.create(TEST_FILE, FILE_NAME);
         assertTrue(Files.exists(service.read(FILE_NAME)));
         service.delete(FILE_NAME);
         assertFalse(Files.exists(service.read(FILE_NAME)));
     }
 
+    @Test
+    @DisplayName("load file as resource")
+    void loadExistingFileAsResource() {
+        assertDoesNotThrow(() -> service.create(TEST_FILE, FILE_NAME));
+        var resource = assertDoesNotThrow(() -> service.readAsResource(FILE_NAME));
+        assertAll("file properties",
+                () -> assertTrue(resource.exists()),
+                () -> assertTrue(resource.isFile())
+        );
+
+    }
+
+    @Test
+    @DisplayName("throw error if file not exists for trying to load as resource")
+    void loadNotExistingFileAsResource() {
+        var exception = assertThrows(StorageException.class, () -> service.readAsResource("something_else"));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getErrorCode());
+    }
+
     @AfterEach
-    void tearDown(){
+    void tearDown() {
         assertDoesNotThrow(() -> service.delete(FILE_NAME));
     }
 }

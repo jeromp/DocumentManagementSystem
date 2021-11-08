@@ -3,6 +3,7 @@ package com.github.jeromp.documentmanagementsystem.business.adapter;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentFilePersistencePort;
 import com.github.jeromp.documentmanagementsystem.persistence.storage.DocumentStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 
 import java.io.InputStream;
 
@@ -16,8 +17,8 @@ public class DocumentFilePersistenceAdapter implements DocumentFilePersistencePo
     }
 
     @Override
-    public void read(String fileName) {
-
+    public Resource readAsResource(String fileName) {
+        return this.documentStorageService.readAsResource(fileName);
     }
 
     @Override

@@ -89,7 +89,7 @@ class DocumentResourceTest extends AbstractResourceTest {
     @DisplayName("Test get request with correct id")
     void getDocumentById() throws Exception {
         String uri = BASE_URI + "/" + this.uuid;
-        Mockito.when(service.read(this.uuid.toString())).thenReturn(this.documentBo);
+        Mockito.when(service.readBo(this.uuid.toString())).thenReturn(this.documentBo);
         Mockito.when(documentDtoMapper.documentBoToDocumentDto(this.documentBo)).thenReturn(this.documentDto);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
@@ -109,7 +109,7 @@ class DocumentResourceTest extends AbstractResourceTest {
     @DisplayName("Test get request with false id")
     void getDocumentByWrongId() throws Exception {
         var randomUUID = UUID.randomUUID().toString();
-        Mockito.when(service.read(randomUUID)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Some message"));
+        Mockito.when(service.readBo(randomUUID)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Some message"));
         String uri = BASE_URI + "/" + randomUUID;
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();

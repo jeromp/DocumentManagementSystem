@@ -20,7 +20,6 @@ public class DocumentDataPersistenceAdapter implements DocumentDataPersistencePo
     @Autowired
     private DocumentRepository documentRepository;
 
-
     @Autowired
     private DocumentMapper documentMapper;
 

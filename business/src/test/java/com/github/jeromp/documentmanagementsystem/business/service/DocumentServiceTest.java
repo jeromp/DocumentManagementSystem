@@ -13,11 +13,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,6 +47,9 @@ class DocumentServiceTest {
 
     private DocumentBo documentBo;
 
+    @Mock
+    private Resource documentResource;
+
     @BeforeEach
     void setUp() {
         this.documentBo = new DocumentBo();
@@ -59,7 +67,7 @@ class DocumentServiceTest {
     @DisplayName("Test find document by correct id")
     void readByCorrectId() {
         Mockito.when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
-        var readDocument = documentService.read(this.documentBo.getUuid().toString());
+        var readDocument = documentService.readBo(this.documentBo.getUuid().toString());
         assertAll("all properties of readed document",
                 () -> assertEquals(documentBo.getTitle(), readDocument.getTitle()),
                 () -> assertEquals(documentBo.getUuid(), readDocument.getUuid()),
@@ -73,7 +81,7 @@ class DocumentServiceTest {
     void readByIncorrectId() {
         var uuid = UUID.randomUUID();
         Mockito.when(documentDataPersistencePort.readByUuid(uuid)).thenThrow(new DocumentServiceException(HttpStatus.NOT_FOUND, "There will be a message."));
-        var exception = assertThrows(DocumentServiceException.class, () -> documentService.read(uuid.toString()));
+        var exception = assertThrows(DocumentServiceException.class, () -> documentService.readBo(uuid.toString()));
         assertEquals(HttpStatus.NOT_FOUND, exception.getErrorCode());
     }
 
@@ -113,6 +121,21 @@ class DocumentServiceTest {
         assertAll("all properties of readed document",
                 () -> assertEquals(1, queriedDocuments.size()),
                 () -> assertEquals(documentBo.getUuid(), queriedDocuments.get(0).getUuid())
+        );
+    }
+
+    @Test
+    @DisplayName("Test load document file as resource")
+    void readAsResource() {
+        Mockito.when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
+        Mockito.when(documentFilePersistencePort.readAsResource(this.documentBo.getPath())).thenReturn(this.documentResource);
+        Mockito.when(this.documentResource.exists()).thenReturn(true);
+        Mockito.when(this.documentResource.isFile()).thenReturn(true);
+        var readDocument = documentService.readResource(this.documentBo.getUuid().toString());
+        assertAll("all properties of readed document",
+                () -> assertEquals(readDocument, readDocument),
+                () -> assertTrue(readDocument.exists()),
+                () -> assertTrue(readDocument.isFile())
         );
     }
 

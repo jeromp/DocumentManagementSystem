@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -41,7 +42,16 @@ public class DocumentResource {
     )
     @GetMapping("/{id}")
     public DocumentDto get(@PathVariable(value = "id") @UuidIsValid String id) {
-        return this.documentDtoMapper.documentBoToDocumentDto(service.read(id));
+        return this.documentDtoMapper.documentBoToDocumentDto(service.readBo(id));
+    }
+
+    @Operation(
+            summary = "Get document resource by id",
+            description = "read document as resource by id"
+    )
+    @GetMapping(value = "/{id}/resource", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public Resource getResource(@PathVariable(value = "id") @UuidIsValid String id) {
+        return service.readResource(id);
     }
 
     @Operation(

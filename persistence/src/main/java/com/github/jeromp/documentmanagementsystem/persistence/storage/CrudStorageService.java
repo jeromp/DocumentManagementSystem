@@ -1,5 +1,6 @@
 package com.github.jeromp.documentmanagementsystem.persistence.storage;
 
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -13,4 +14,5 @@ public interface CrudStorageService {
 
     Path read(String fileName);
 
+    Resource readAsResource(String fileName);
 }

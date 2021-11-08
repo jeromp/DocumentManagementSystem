@@ -6,6 +6,7 @@ import com.github.jeromp.documentmanagementsystem.business.port.DocumentServiceP
 
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,14 @@ public class DocumentService implements DocumentServicePort {
     }
 
     @Override
-    public DocumentBo read(String uuidString) {
+    public Resource readResource(String uuidString) {
+        var uuid = UUID.fromString(uuidString);
+        var document = this.documentDataPersistencePort.readByUuid(uuid);
+        return this.documentFilePersistencePort.readAsResource(document.getPath());
+    }
+
+    @Override
+    public DocumentBo readBo(String uuidString) {
         var uuid = UUID.fromString(uuidString);
         return this.documentDataPersistencePort.readByUuid(uuid);
     }
