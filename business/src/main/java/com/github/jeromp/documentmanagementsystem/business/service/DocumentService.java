@@ -53,22 +53,10 @@ public class DocumentService implements DocumentServicePort {
 
     @Override
     public List<DocumentBo> findByQuery(Optional<String> title, Optional<String> description, Optional<LocalDateTime> documentCreatedAfter, Optional<LocalDateTime> documentCreatedBefore) {
-        String titleString = null;
-        String descriptionString = null;
-        LocalDateTime documentCreatedAfterObj = null;
-        LocalDateTime documentCreatedBeforeObj = null;
-        if (title.isPresent()) {
-            titleString = title.get();
-        }
-        if (description.isPresent()) {
-            descriptionString = description.get();
-        }
-        if (documentCreatedAfter.isPresent()) {
-            documentCreatedAfterObj = documentCreatedAfter.get();
-        }
-        if (documentCreatedBefore.isPresent()) {
-            documentCreatedBeforeObj = documentCreatedBefore.get();
-        }
+        String titleString = title.orElse(null);
+        String descriptionString = description.orElse(null);
+        LocalDateTime documentCreatedAfterObj = documentCreatedAfter.orElse(null);
+        LocalDateTime documentCreatedBeforeObj = documentCreatedBefore.orElse(null);
         return this.documentDataPersistencePort.findByQuery(titleString, descriptionString, documentCreatedAfterObj, documentCreatedBeforeObj);
     }
 

@@ -105,25 +105,43 @@ class DocumentRepositoryTest {
     }
 
     @Test
-    @DisplayName("Get Documents by Query with date parameters")
-    void findByQueryWithDate() {
+    @DisplayName("Get Documents by Query with regular date parameters")
+    void findByQueryWithRegularDateRange() {
         Optional<String> optionalNull = Optional.ofNullable(null);
-        var documentList = this.repository.findByQuery(null, null, YESTERDAY_DATE.minusDays(1), YESTERDAY_DATE.plusDays(1));
-        var documentList2 = this.repository.findByQuery(null, null, YESTERDAY_DATE, YESTERDAY_DATE.plusDays(1));
-        var documentList3 = this.repository.findByQuery(null, null, YESTERDAY_DATE.minusDays(1), YESTERDAY_DATE);
-        var documentList4 = this.repository.findByQuery(null, null, YESTERDAY_DATE, YESTERDAY_DATE);
-        var documentList5 = this.repository.findByQuery(null, null, LocalDateTime.now(), null);
-        System.out.println(documentList.get(0).getMeta().getDocumentCreated());
-        System.out.println(YESTERDAY_DATE);
-        System.out.println(documentList.get(0).getMeta().getDocumentCreated() == YESTERDAY_DATE);
-        assertAll("different date ranges",
-                () -> assertEquals(1, documentList.size()),
-                () -> assertEquals(1, documentList2.size()),
-                () -> assertEquals(1, documentList3.size()),
-                () -> assertEquals(1, documentList4.size()),
-                () -> assertEquals(0, documentList5.size())
-        );
+        var documentList = assertDoesNotThrow(() -> this.repository.findByQuery(null, null, YESTERDAY_DATE.minusDays(1), YESTERDAY_DATE.plusDays(1)));
+        assertEquals(1, documentList.size());
+    }
 
+    @Test
+    @DisplayName("Get Documents by Query with edge case start date parameter")
+    void findByQueryWithEdgeCaseStartDate() {
+        Optional<String> optionalNull = Optional.ofNullable(null);
+        var documentList = assertDoesNotThrow(() -> this.repository.findByQuery(null, null, YESTERDAY_DATE, YESTERDAY_DATE.plusDays(1)));
+        assertEquals(1, documentList.size());
+    }
+
+    @Test
+    @DisplayName("Get Documents by Query with edge case end date parameter")
+    void findByQueryWithEdgeCaseEndDate() {
+        Optional<String> optionalNull = Optional.ofNullable(null);
+        var documentList = assertDoesNotThrow(() -> this.repository.findByQuery(null, null, YESTERDAY_DATE.minusDays(1), YESTERDAY_DATE));
+        assertEquals(1, documentList.size());
+    }
+
+    @Test
+    @DisplayName("Get Documents by Query with edge case start and end date parameter")
+    void findByQueryWithEdgeCaseStartAndEndDate() {
+        Optional<String> optionalNull = Optional.ofNullable(null);
+        var documentList = assertDoesNotThrow(() -> this.repository.findByQuery(null, null, YESTERDAY_DATE, YESTERDAY_DATE));
+        assertEquals(1, documentList.size());
+    }
+
+    @Test
+    @DisplayName("Get Documents by Query outside range date parameter")
+    void findByQueryWithOutsideDateRange() {
+        Optional<String> optionalNull = Optional.ofNullable(null);
+        var documentList = assertDoesNotThrow(() -> this.repository.findByQuery(null, null, LocalDateTime.now(), null));
+        assertEquals(0, documentList.size());
     }
 
     @Test

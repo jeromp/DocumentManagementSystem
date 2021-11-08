@@ -29,6 +29,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(SpringExtension.class)
 class DocumentServiceTest {
@@ -66,7 +68,7 @@ class DocumentServiceTest {
     @Test
     @DisplayName("Test find document by correct id")
     void readByCorrectId() {
-        Mockito.when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
+        when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
         var readDocument = documentService.readBo(this.documentBo.getUuid().toString());
         assertAll("all properties of readed document",
                 () -> assertEquals(documentBo.getTitle(), readDocument.getTitle()),
@@ -80,7 +82,7 @@ class DocumentServiceTest {
     @DisplayName("Test throw error for document with incorrect id")
     void readByIncorrectId() {
         var uuid = UUID.randomUUID();
-        Mockito.when(documentDataPersistencePort.readByUuid(uuid)).thenThrow(new DocumentServiceException(HttpStatus.NOT_FOUND, "There will be a message."));
+        when(documentDataPersistencePort.readByUuid(uuid)).thenThrow(new DocumentServiceException(HttpStatus.NOT_FOUND, "There will be a message."));
         var exception = assertThrows(DocumentServiceException.class, () -> documentService.readBo(uuid.toString()));
         assertEquals(HttpStatus.NOT_FOUND, exception.getErrorCode());
     }
@@ -99,8 +101,8 @@ class DocumentServiceTest {
         metaBo.setDocumentCreated(EXAMPLE_TIME);
         documentBo.setMeta(metaBo);
 
-        Mockito.when(documentDataPersistencePort.create(documentBo)).thenReturn(documentBo);
-        Mockito.doNothing().when(documentFilePersistencePort).create(any(InputStream.class), any(String.class));
+        when(documentDataPersistencePort.create(documentBo)).thenReturn(documentBo);
+        doNothing().when(documentFilePersistencePort).create(any(InputStream.class), any(String.class));
         var readDocument = assertDoesNotThrow(() -> this.documentService.create(file, testTitle + ".txt", documentBo));
         assertAll("all properties of read document",
                 () -> assertEquals(testTitle, readDocument.getTitle()),
@@ -116,7 +118,7 @@ class DocumentServiceTest {
         String description = DOCUMENT_DESCRIPTION;
         var documentBoList = new ArrayList<DocumentBo>();
         documentBoList.add(this.documentBo);
-        Mockito.when(documentDataPersistencePort.findByQuery(title, description, null, null)).thenReturn(documentBoList);
+        when(documentDataPersistencePort.findByQuery(title, description, null, null)).thenReturn(documentBoList);
         var queriedDocuments = documentService.findByQuery(Optional.of(title), Optional.of(description), Optional.ofNullable(null), Optional.ofNullable(null));
         assertAll("all properties of readed document",
                 () -> assertEquals(1, queriedDocuments.size()),
@@ -127,10 +129,10 @@ class DocumentServiceTest {
     @Test
     @DisplayName("Test load document file as resource")
     void readAsResource() {
-        Mockito.when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
-        Mockito.when(documentFilePersistencePort.readAsResource(this.documentBo.getPath())).thenReturn(this.documentResource);
-        Mockito.when(this.documentResource.exists()).thenReturn(true);
-        Mockito.when(this.documentResource.isFile()).thenReturn(true);
+        when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
+        when(documentFilePersistencePort.readAsResource(this.documentBo.getPath())).thenReturn(this.documentResource);
+        when(this.documentResource.exists()).thenReturn(true);
+        when(this.documentResource.isFile()).thenReturn(true);
         var readDocument = documentService.readResource(this.documentBo.getUuid().toString());
         assertAll("all properties of readed document",
                 () -> assertEquals(readDocument, readDocument),
