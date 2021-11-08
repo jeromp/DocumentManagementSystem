@@ -1,6 +1,7 @@
 package com.github.jeromp.documentmanagementsystem.business.service;
 
-import com.github.jeromp.documentmanagementsystem.business.port.DocumentPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentFilePersistencePort;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import com.github.jeromp.documentmanagementsystem.entity.MetaBo;
 
@@ -18,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,7 +32,10 @@ class DocumentServiceTest {
     private static final String DOCUMENT_DESCRIPTION = "Example description is here.";
 
     @Mock
-    private DocumentPersistencePort documentPersistencePort;
+    private DocumentDataPersistencePort documentDataPersistencePort;
+
+    @Mock
+    private DocumentFilePersistencePort documentFilePersistencePort;
 
     @InjectMocks
     private DocumentService documentService;
@@ -55,7 +58,7 @@ class DocumentServiceTest {
     @Test
     @DisplayName("Test find document by correct id")
     void readByCorrectId() {
-        Mockito.when(documentPersistencePort.findByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
+        Mockito.when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
         var readDocument = documentService.read(this.documentBo.getUuid().toString());
         assertAll("all properties of readed document",
                 () -> assertEquals(documentBo.getTitle(), readDocument.getTitle()),
@@ -69,7 +72,7 @@ class DocumentServiceTest {
     @DisplayName("Test throw error for document with incorrect id")
     void readByIncorrectId() {
         var uuid = UUID.randomUUID();
-        Mockito.when(documentPersistencePort.findByUuid(uuid)).thenThrow(new DocumentServiceException(HttpStatus.NOT_FOUND, "There will be a message."));
+        Mockito.when(documentDataPersistencePort.readByUuid(uuid)).thenThrow(new DocumentServiceException(HttpStatus.NOT_FOUND, "There will be a message."));
         var exception = assertThrows(DocumentServiceException.class, () -> documentService.read(uuid.toString()));
         assertEquals(HttpStatus.NOT_FOUND, exception.getErrorCode());
     }
@@ -88,8 +91,8 @@ class DocumentServiceTest {
         metaBo.setDocumentCreated(EXAMPLE_TIME);
         documentBo.setMeta(metaBo);
 
-        Mockito.when(documentPersistencePort.save(documentBo)).thenReturn(documentBo);
-        Mockito.doNothing().when(documentPersistencePort).create(any(InputStream.class), any(String.class));
+        Mockito.when(documentDataPersistencePort.create(documentBo)).thenReturn(documentBo);
+        Mockito.doNothing().when(documentFilePersistencePort).create(any(InputStream.class), any(String.class));
         var readDocument = assertDoesNotThrow(() -> this.documentService.create(file, testTitle + ".txt", documentBo));
         assertAll("all properties of read document",
                 () -> assertEquals(testTitle, readDocument.getTitle()),
@@ -105,7 +108,7 @@ class DocumentServiceTest {
         String description = DOCUMENT_DESCRIPTION;
         var documentBoList = new ArrayList<DocumentBo>();
         documentBoList.add(this.documentBo);
-        Mockito.when(documentPersistencePort.findByQuery(title, description, null, null)).thenReturn(documentBoList);
+        Mockito.when(documentDataPersistencePort.findByQuery(title, description, null, null)).thenReturn(documentBoList);
         var queriedDocuments = documentService.findByQuery(Optional.of(title), Optional.of(description), Optional.ofNullable(null), Optional.ofNullable(null));
         assertAll("all properties of readed document",
                 () -> assertEquals(1, queriedDocuments.size()),
@@ -115,6 +118,6 @@ class DocumentServiceTest {
 
     @AfterEach
     void tearDown() {
-        assertDoesNotThrow(() -> this.documentPersistencePort.delete(this.documentBo));
+        assertDoesNotThrow(() -> this.documentDataPersistencePort.delete(this.documentBo));
     }
 }

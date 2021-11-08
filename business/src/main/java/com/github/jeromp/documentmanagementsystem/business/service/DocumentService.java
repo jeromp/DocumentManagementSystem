@@ -1,14 +1,13 @@
 package com.github.jeromp.documentmanagementsystem.business.service;
 
-import com.github.jeromp.documentmanagementsystem.business.port.DocumentPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentFilePersistencePort;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentServicePort;
 
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
-import com.zaxxer.hikari.util.UtilityElf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -19,27 +18,29 @@ import java.util.UUID;
 @Service
 public class DocumentService implements DocumentServicePort {
 
-    private DocumentPersistencePort documentPersistencePort;
+    private DocumentDataPersistencePort documentDataPersistencePort;
+    private DocumentFilePersistencePort documentFilePersistencePort;
 
     @Autowired
-    public DocumentService(DocumentPersistencePort documentPersistencePort) {
-        this.documentPersistencePort = documentPersistencePort;
+    public DocumentService(DocumentDataPersistencePort documentDataPersistencePort, DocumentFilePersistencePort documentFilePersistencePort) {
+        this.documentDataPersistencePort = documentDataPersistencePort;
+        this.documentFilePersistencePort = documentFilePersistencePort;
     }
 
     @Override
     public DocumentBo read(String uuidString) {
         var uuid = UUID.fromString(uuidString);
-        return this.documentPersistencePort.findByUuid(uuid);
+        return this.documentDataPersistencePort.readByUuid(uuid);
     }
 
     @Override
     public DocumentBo create(InputStream file, String originalFileName, DocumentBo documentBo) {
         var uuid = UUID.randomUUID();
         String fileName = createFileName(originalFileName, documentBo.getTitle(), uuid);
-        this.documentPersistencePort.create(file, fileName);
+        this.documentFilePersistencePort.create(file, fileName);
         documentBo.setUuid(uuid);
         documentBo.setPath(fileName);
-        return this.documentPersistencePort.save(documentBo);
+        return this.documentDataPersistencePort.create(documentBo);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class DocumentService implements DocumentServicePort {
         if (documentCreatedBefore.isPresent()) {
             documentCreatedBeforeObj = documentCreatedBefore.get();
         }
-        return this.documentPersistencePort.findByQuery(titleString, descriptionString, documentCreatedAfterObj, documentCreatedBeforeObj);
+        return this.documentDataPersistencePort.findByQuery(titleString, descriptionString, documentCreatedAfterObj, documentCreatedBeforeObj);
     }
 
     private String createFileName(String oldFile, String title, UUID id) {

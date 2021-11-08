@@ -8,16 +8,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface DocumentPersistencePort {
-    DocumentBo findByUuid(UUID uuid);
+public interface DocumentDataPersistencePort {
+    DocumentBo readByUuid(UUID uuid);
 
-    List<DocumentBo> findAll();
+    List<DocumentBo> readAll();
 
     public List<DocumentBo> findByQuery(String title, String description, LocalDateTime documentCreatedAfter, LocalDateTime documentCreatedBefore);
 
-    void create(InputStream file, String fileName);
-
-    DocumentBo save(DocumentBo documentBo);
+    DocumentBo create(DocumentBo documentBo);
 
     void delete(DocumentBo documentBo);
 }

@@ -1,6 +1,6 @@
 package com.github.jeromp.documentmanagementsystem.business.adapter;
 
-import com.github.jeromp.documentmanagementsystem.business.port.DocumentPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPersistencePort;
 import com.github.jeromp.documentmanagementsystem.business.service.DocumentServiceException;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import com.github.jeromp.documentmanagementsystem.persistence.mapper.DocumentMapper;
@@ -13,39 +13,32 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class DocumentPersistenceAdapter implements DocumentPersistencePort {
+public class DocumentDataPersistenceAdapter implements DocumentDataPersistencePort {
     @Autowired
     private DocumentRepository documentRepository;
 
-    @Autowired
-    private DocumentStorageService documentStorageService;
 
     @Autowired
     private DocumentMapper documentMapper;
 
     @Override
-    public DocumentBo findByUuid(UUID uuid) {
+    public DocumentBo readByUuid(UUID uuid) {
         var document = this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentServiceException(HttpStatus.NOT_FOUND, "Document with id: " + uuid + " not found."));
         return this.documentMapper.documentToDocumentBo(document);
     }
 
-    @Override
-    public void create(InputStream file, String fileName) {
-        this.documentStorageService.create(file, fileName);
-    }
 
     @Override
-    public DocumentBo save(DocumentBo documentBo) {
+    public DocumentBo create(DocumentBo documentBo) {
         var document = this.documentRepository.save(this.documentMapper.documentBoToDocument(documentBo));
         return this.documentMapper.documentToDocumentBo(document);
     }
 
     @Override
-    public List<DocumentBo> findAll() {
+    public List<DocumentBo> readAll() {
         var documents = this.documentRepository.findAll();
         return this.documentMapper.mapDocumentsToDocumentBoList(documents);
     }
