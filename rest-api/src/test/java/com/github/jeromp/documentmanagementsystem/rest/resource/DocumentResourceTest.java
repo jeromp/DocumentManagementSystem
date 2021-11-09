@@ -9,11 +9,9 @@ import com.github.jeromp.documentmanagementsystem.rest.dto.MetaDto;
 import com.github.jeromp.documentmanagementsystem.rest.dto.mapper.DocumentDtoMapper;
 import com.github.jeromp.documentmanagementsystem.rest.resource.common.DocumentNotFoundException;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,11 +27,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DisplayName("Document REST Api Controller Tests")
 class DocumentResourceTest extends AbstractResourceTest {
-    private static final String BASE_URI = "/documents/";
+    private static final String BASE_URI = "/documents";
     private static final String EXAMPLE_TIME = "2021-08-01T12:00:00.000000";
 
     @MockBean
@@ -63,7 +65,7 @@ class DocumentResourceTest extends AbstractResourceTest {
     protected void setUp() {
         super.setUp();
         this.documentDto = new DocumentDto();
-        this.documentDto.setTitle("Example document");
+        this.documentDto.setTitle("Example");
         this.documentDto.setPath("example_path/document.txt");
         this.uuid = UUID.randomUUID();
         this.documentDto.setUuid(this.uuid);
@@ -85,12 +87,12 @@ class DocumentResourceTest extends AbstractResourceTest {
     @Test
     @DisplayName("Test get request with correct id")
     void getDocumentById() throws Exception {
-        String uri = BASE_URI + this.uuid;
-        Mockito.when(service.read(this.uuid.toString())).thenReturn(this.documentBo);
-        Mockito.when(documentDtoMapper.documentBoToDocumentDto(this.documentBo)).thenReturn(this.documentDto);
+        String uri = BASE_URI + "/" + this.uuid;
+        when(service.read(this.uuid.toString())).thenReturn(this.documentBo);
+        when(documentDtoMapper.documentBoToDocumentDto(this.documentBo)).thenReturn(this.documentDto);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
         String response = mvcResult.getResponse().getContentAsString();
         var responseDocument = super.mapFromJson(response, DocumentDto.class);
         assertAll("all properties",
@@ -106,11 +108,11 @@ class DocumentResourceTest extends AbstractResourceTest {
     @DisplayName("Test get request with false id")
     void getDocumentByWrongId() throws Exception {
         var randomUUID = UUID.randomUUID().toString();
-        Mockito.when(service.read(randomUUID)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Some message"));
-        String uri = BASE_URI + randomUUID;
+        when(service.read(randomUUID)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Some message"));
+        String uri = BASE_URI + "/" + randomUUID;
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-        assertEquals(404, mvcResult.getResponse().getStatus());
+        assertEquals(HttpStatus.NOT_FOUND.value(), mvcResult.getResponse().getStatus());
     }
 
     @Test
@@ -147,12 +149,12 @@ class DocumentResourceTest extends AbstractResourceTest {
         metaDto.setDescription(metaBo.getDescription());
         documentDto.setMeta(metaDto);
 
-        Mockito.when(documentDtoMapper.mapPartsToDocumentBo(testTitle, testDescription, EXAMPLE_TIME)).thenReturn(documentBo);
-        Mockito.when(service.create(any(InputStream.class), eq(file.getOriginalFilename()), any(DocumentBo.class))).thenReturn(documentBo);
-        Mockito.when(documentDtoMapper.documentBoToDocumentDto(any(DocumentBo.class))).thenReturn(documentDto);
+        when(documentDtoMapper.mapPartsToDocumentBo(testTitle, testDescription, EXAMPLE_TIME)).thenReturn(documentBo);
+        when(service.create(any(InputStream.class), eq(file.getOriginalFilename()), any(DocumentBo.class))).thenReturn(documentBo);
+        when(documentDtoMapper.documentBoToDocumentDto(any(DocumentBo.class))).thenReturn(documentDto);
 
-        MvcResult mvcResult = mvc.perform(multipart(BASE_URI).file(file).part(mockTitle).part(mockDescription).part(mockDocumentCreated)).andReturn();
-        assertEquals(200, mvcResult.getResponse().getStatus());
+        MvcResult mvcResult = mvc.perform(multipart(BASE_URI + "/").file(file).part(mockTitle).part(mockDescription).part(mockDocumentCreated)).andReturn();
+        assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
         String response = mvcResult.getResponse().getContentAsString();
         var responseDocument = super.mapFromJson(response, DocumentDto.class);
         assertAll("all properties",
@@ -179,11 +181,11 @@ class DocumentResourceTest extends AbstractResourceTest {
         byte[] documentTitle = testTitle.getBytes(StandardCharsets.UTF_8);
         MockPart mockTitle = new MockPart("title", documentTitle);
 
-        Mockito.when(documentDtoMapper.mapPartsToDocumentBo(testTitle, null, null)).thenReturn(documentBo);
-        Mockito.when(service.create(any(InputStream.class), eq(file.getOriginalFilename()), any(DocumentBo.class))).thenReturn(documentBo);
-        Mockito.when(documentDtoMapper.documentBoToDocumentDto(any(DocumentBo.class))).thenReturn(documentDto);
+        when(documentDtoMapper.mapPartsToDocumentBo(testTitle, null, null)).thenReturn(documentBo);
+        when(service.create(any(InputStream.class), eq(file.getOriginalFilename()), any(DocumentBo.class))).thenReturn(documentBo);
+        when(documentDtoMapper.documentBoToDocumentDto(any(DocumentBo.class))).thenReturn(documentDto);
 
-        MvcResult mvcResult = mvc.perform(multipart(BASE_URI).file(file).part(mockTitle))
+        MvcResult mvcResult = mvc.perform(multipart(BASE_URI + "/").file(file).part(mockTitle))
                 .andExpect(status().isOk()).andReturn();
         String response = mvcResult.getResponse().getContentAsString();
         var responseDocument = super.mapFromJson(response, DocumentDto.class);
@@ -203,12 +205,28 @@ class DocumentResourceTest extends AbstractResourceTest {
                 "Hello, World!".getBytes()
         );
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        MvcResult mvcResult = mockMvc.perform(multipart(BASE_URI).file(file)).andReturn();
-        assertEquals(412, mvcResult.getResponse().getStatus());
+        MvcResult mvcResult = mockMvc.perform(multipart(BASE_URI + "/").file(file)).andReturn();
+        assertEquals(HttpStatus.PRECONDITION_FAILED.value(), mvcResult.getResponse().getStatus());
     }
 
-    @AfterEach
-    void tearDown(){
-        // assertDoesNotThrow(() -> this.documentRepository.delete(this.document));
+    @Test
+    @DisplayName("Test search with fields")
+    void findDocumentsWithQuery() throws Exception {
+        Optional<String> title = Optional.of("Example");
+        var documentBoList = new ArrayList<DocumentBo>();
+        documentBoList.add(this.documentBo);
+        var documentDtoList = new ArrayList<DocumentDto>();
+        documentDtoList.add(this.documentDto);
+        String uri = BASE_URI + "?title=Example";
+        when(service.findByQuery(title, Optional.ofNullable(null), Optional.ofNullable(null), Optional.ofNullable(null))).thenReturn(documentBoList);
+        when(documentDtoMapper.mapDocumentBosToDocumentDtoList(documentBoList)).thenReturn(documentDtoList);
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
+        String response = mvcResult.getResponse().getContentAsString();
+        List<DocumentDto> responseDocument = super.mapFromJson(response, List.class);
+        assertAll("all properties",
+                () -> assertEquals(1, responseDocument.size())
+        );
     }
 }

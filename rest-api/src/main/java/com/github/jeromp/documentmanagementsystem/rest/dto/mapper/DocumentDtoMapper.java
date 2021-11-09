@@ -4,7 +4,7 @@ import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import com.github.jeromp.documentmanagementsystem.rest.dto.DocumentDto;
 import org.mapstruct.*;
 
-import java.util.UUID;
+import java.util.List;
 
 @Mapper(config = MappingConfig.class, uses = {MetaDtoMapper.class})
 public interface DocumentDtoMapper {
@@ -17,4 +17,6 @@ public interface DocumentDtoMapper {
     @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "path", ignore = true)
     DocumentBo mapPartsToDocumentBo(String title, String description, String documentCreated);
+
+    List<DocumentDto> mapDocumentBosToDocumentDtoList(List<DocumentBo> documentBos);
 }
