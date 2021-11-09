@@ -5,7 +5,6 @@ import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface DocumentDataPersistencePort {
@@ -13,7 +12,7 @@ public interface DocumentDataPersistencePort {
 
     List<DocumentBo> readAll();
 
-    public List<DocumentBo> findByQuery(String title, String description, LocalDateTime documentCreatedAfter, LocalDateTime documentCreatedBefore);
+    List<DocumentBo> findByQuery(String title, String description, LocalDateTime documentCreatedAfter, LocalDateTime documentCreatedBefore);
 
     DocumentBo create(DocumentBo documentBo);
 
