@@ -1,4 +1,4 @@
-package com.github.jeromp.documentmanagementsystem.rest.resource.common;
+package com.github.jeromp.documentmanagementsystem.business.service.common;
 
 import org.springframework.http.HttpStatus;
 

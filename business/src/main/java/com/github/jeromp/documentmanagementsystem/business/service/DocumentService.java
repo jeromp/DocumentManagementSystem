@@ -4,6 +4,7 @@ import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPers
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentFilePersistencePort;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentServicePort;
 
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentServiceException;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;

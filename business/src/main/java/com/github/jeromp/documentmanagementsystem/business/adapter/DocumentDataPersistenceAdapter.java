@@ -1,16 +1,15 @@
 package com.github.jeromp.documentmanagementsystem.business.adapter;
 
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPersistencePort;
-import com.github.jeromp.documentmanagementsystem.business.service.DocumentServiceException;
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentNotFoundException;
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentServiceException;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import com.github.jeromp.documentmanagementsystem.persistence.mapper.DocumentMapper;
 import com.github.jeromp.documentmanagementsystem.persistence.repository.DocumentRepository;
-import com.github.jeromp.documentmanagementsystem.persistence.storage.DocumentStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -25,7 +24,7 @@ public class DocumentDataPersistenceAdapter implements DocumentDataPersistencePo
 
     @Override
     public DocumentBo readByUuid(UUID uuid) {
-        var document = this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentServiceException(HttpStatus.NOT_FOUND, "Document with id: " + uuid + " not found."));
+        var document = this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document with id: " + uuid + " not found."));
         return this.documentMapper.documentToDocumentBo(document);
     }
 

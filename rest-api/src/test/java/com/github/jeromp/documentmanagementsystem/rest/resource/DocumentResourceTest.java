@@ -7,7 +7,7 @@ import com.github.jeromp.documentmanagementsystem.entity.MetaBo;
 import com.github.jeromp.documentmanagementsystem.rest.dto.DocumentDto;
 import com.github.jeromp.documentmanagementsystem.rest.dto.MetaDto;
 import com.github.jeromp.documentmanagementsystem.rest.dto.mapper.DocumentDtoMapper;
-import com.github.jeromp.documentmanagementsystem.rest.resource.common.DocumentNotFoundException;
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

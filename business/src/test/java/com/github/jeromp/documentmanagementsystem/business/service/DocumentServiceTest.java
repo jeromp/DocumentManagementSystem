@@ -2,6 +2,7 @@ package com.github.jeromp.documentmanagementsystem.business.service;
 
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPersistencePort;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentFilePersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentServiceException;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import com.github.jeromp.documentmanagementsystem.entity.MetaBo;
 
@@ -12,17 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;

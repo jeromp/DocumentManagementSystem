@@ -72,7 +72,6 @@ public class DocumentStorageServiceTest {
                 () -> assertTrue(resource.exists()),
                 () -> assertTrue(resource.isFile())
         );
-
     }
 
     @Test
