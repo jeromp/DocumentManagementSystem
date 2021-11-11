@@ -30,9 +30,4 @@ public class DocumentFilePersistenceAdapter implements DocumentFilePersistencePo
     public String readMimeType(String fileName) {
         return this.documentStorageService.readMimeType(fileName);
     }
-
-    @Override
-    public void delete(String fileName) {
-
-    }
 }
