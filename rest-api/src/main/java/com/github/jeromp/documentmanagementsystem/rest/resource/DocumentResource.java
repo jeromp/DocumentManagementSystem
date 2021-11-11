@@ -12,11 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +55,21 @@ public class DocumentResource {
     @GetMapping(value = "/{id}/resource", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public Resource getResource(@PathVariable(value = "id") @UuidIsValid String id) {
         return service.readResource(id);
+    }
+
+    @Operation(
+            summary = "Get document resource by id",
+            description = "read document as resource by id"
+    )
+    @GetMapping(value = "/{id}/stream")
+    public ResponseEntity<StreamingResponseBody> getStream(@PathVariable(value = "id") @UuidIsValid String id) {
+        var streamBo = service.readStream(id);
+        StreamingResponseBody responseBody = response -> {
+            response.write(streamBo.getBytes());
+        };
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(streamBo.getContentType()))
+                .body(responseBody);
     }
 
     @Operation(

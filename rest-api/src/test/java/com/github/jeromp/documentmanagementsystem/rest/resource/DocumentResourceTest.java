@@ -1,5 +1,6 @@
 package com.github.jeromp.documentmanagementsystem.rest.resource;
 
+import com.github.jeromp.documentmanagementsystem.entity.DocumentStreamBo;
 import com.github.jeromp.documentmanagementsystem.rest.RestApiTestConfig;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentServicePort;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
@@ -228,5 +229,29 @@ class DocumentResourceTest extends AbstractResourceTest {
         assertAll("all properties",
                 () -> assertEquals(1, responseDocument.size())
         );
+    }
+
+    @Test
+    @DisplayName("Get document as stream")
+    void getDocumentAsBytes() throws Exception {
+        DocumentStreamBo streamBo = new DocumentStreamBo();
+        streamBo.setBytes("Hello World".getBytes());
+        streamBo.setContentType(MediaType.TEXT_PLAIN_VALUE);
+        String uri = BASE_URI + "/" + this.uuid + "/stream";
+        when(service.readStream(this.uuid.toString())).thenReturn(streamBo);
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)).andReturn();
+        assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
+        String response = mvcResult.getResponse().getContentAsString();
+        assertEquals("Hello World", response);
+    }
+
+    @Test
+    @DisplayName("Get document as stream of not existing document")
+    void getDocumentAsBytesFails() throws Exception {
+        var uuid = UUID.randomUUID().toString();
+        String uri = BASE_URI + "/" + uuid + "/stream";
+        when(service.readStream(uuid)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document not found.", null));
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)).andReturn();
+        assertEquals(HttpStatus.NOT_FOUND.value(), mvcResult.getResponse().getStatus());
     }
 }
