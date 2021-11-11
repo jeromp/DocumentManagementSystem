@@ -20,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Document Storage Service unit test")
 public class DocumentStorageServiceTest {
     private static final String FILE_NAME = "test.txt";
-    private static final InputStream TEST_FILE = new ByteArrayInputStream("Hello, World".getBytes());
+    private static final String FILE_CONTENT = "Hello, World";
+    private static final InputStream TEST_FILE = new ByteArrayInputStream(FILE_CONTENT.getBytes());
     private static final String TEST_FILE_NAME = "otherFileName.txt";
 
     @Autowired
@@ -78,6 +79,20 @@ public class DocumentStorageServiceTest {
     @DisplayName("throw error if file not exists for trying to load as resource")
     void loadNotExistingFileAsResource() {
         var exception = assertThrows(StorageException.class, () -> service.readAsResource("something_else"));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("load file as input stream")
+    void loadExistingFileAsInputStream() {
+        assertDoesNotThrow(() -> service.create(TEST_FILE, FILE_NAME));
+        assertDoesNotThrow(() -> service.readAsInputStream(FILE_NAME));
+    }
+
+    @Test
+    @DisplayName("throw error if file not exists for trying to load as input stream")
+    void loadNotExistingFileAsInputStream() {
+        var exception = assertThrows(StorageException.class, () -> service.readAsInputStream("something_else"));
         assertEquals(HttpStatus.NOT_FOUND, exception.getErrorCode());
     }
 

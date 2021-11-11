@@ -57,6 +57,26 @@ public class DocumentStorageService implements CrudStorageService {
     }
 
     @Override
+    public InputStream readAsInputStream(String fileName) {
+        try {
+            Path filePath = this.rootLocation.resolve(fileName).normalize();
+            return Files.newInputStream(filePath);
+        } catch (IOException e) {
+            throw new StorageException(HttpStatus.NOT_FOUND, "Could not read file", e);
+        }
+    }
+
+    @Override
+    public String readMimeType(String fileName) {
+        try {
+            Path filePath = this.rootLocation.resolve(fileName).normalize();
+            return Files.probeContentType(filePath);
+        } catch (IOException e) {
+            throw new StorageException(HttpStatus.NOT_FOUND, "Could not read file", e);
+        }
+    }
+
+    @Override
     public void create(InputStream inputStream, String fileName) {
         try (InputStream iS = inputStream) {
             Path destination = this.getPath(fileName);

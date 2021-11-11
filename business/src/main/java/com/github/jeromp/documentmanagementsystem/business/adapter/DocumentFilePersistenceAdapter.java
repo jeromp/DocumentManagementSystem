@@ -22,6 +22,16 @@ public class DocumentFilePersistenceAdapter implements DocumentFilePersistencePo
     }
 
     @Override
+    public InputStream readAsInputStream(String fileName) {
+        return this.documentStorageService.readAsInputStream(fileName);
+    }
+
+    @Override
+    public String readMimeType(String fileName) {
+        return this.documentStorageService.readMimeType(fileName);
+    }
+
+    @Override
     public void delete(String fileName) {
 
     }

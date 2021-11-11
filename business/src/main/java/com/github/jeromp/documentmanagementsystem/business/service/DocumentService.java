@@ -6,11 +6,13 @@ import com.github.jeromp.documentmanagementsystem.business.port.DocumentServiceP
 
 import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentServiceException;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
+import com.github.jeromp.documentmanagementsystem.entity.DocumentStreamBo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +36,20 @@ public class DocumentService implements DocumentServicePort {
         var uuid = UUID.fromString(uuidString);
         var document = this.documentDataPersistencePort.readByUuid(uuid);
         return this.documentFilePersistencePort.readAsResource(document.getPath());
+    }
+
+    @Override
+    public DocumentStreamBo readStream(String uuidString) {
+        var uuid = UUID.fromString(uuidString);
+        var document = this.documentDataPersistencePort.readByUuid(uuid);
+        DocumentStreamBo documentStreamBo = new DocumentStreamBo();
+        try (InputStream stream = this.documentFilePersistencePort.readAsInputStream(document.getPath())) {
+            documentStreamBo.setBytes(stream.readAllBytes());
+            documentStreamBo.setContentType(this.documentFilePersistencePort.readMimeType(document.getPath()));
+        } catch (IOException e) {
+            throw new DocumentServiceException(HttpStatus.BAD_REQUEST, "Could not read file content.", e);
+        }
+        return documentStreamBo;
     }
 
     @Override

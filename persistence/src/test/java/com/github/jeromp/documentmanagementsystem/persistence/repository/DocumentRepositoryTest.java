@@ -107,7 +107,6 @@ class DocumentRepositoryTest {
     @Test
     @DisplayName("Get Documents by Query with regular date parameters")
     void findByQueryWithRegularDateRange() {
-        Optional<String> optionalNull = Optional.ofNullable(null);
         var documentList = assertDoesNotThrow(() -> this.repository.findByQuery(null, null, YESTERDAY_DATE.minusDays(1), YESTERDAY_DATE.plusDays(1)));
         assertEquals(1, documentList.size());
     }
@@ -115,7 +114,6 @@ class DocumentRepositoryTest {
     @Test
     @DisplayName("Get Documents by Query with edge case start date parameter")
     void findByQueryWithEdgeCaseStartDate() {
-        Optional<String> optionalNull = Optional.ofNullable(null);
         var documentList = assertDoesNotThrow(() -> this.repository.findByQuery(null, null, YESTERDAY_DATE, YESTERDAY_DATE.plusDays(1)));
         assertEquals(1, documentList.size());
     }
@@ -123,7 +121,6 @@ class DocumentRepositoryTest {
     @Test
     @DisplayName("Get Documents by Query with edge case end date parameter")
     void findByQueryWithEdgeCaseEndDate() {
-        Optional<String> optionalNull = Optional.ofNullable(null);
         var documentList = assertDoesNotThrow(() -> this.repository.findByQuery(null, null, YESTERDAY_DATE.minusDays(1), YESTERDAY_DATE));
         assertEquals(1, documentList.size());
     }
@@ -131,7 +128,6 @@ class DocumentRepositoryTest {
     @Test
     @DisplayName("Get Documents by Query with edge case start and end date parameter")
     void findByQueryWithEdgeCaseStartAndEndDate() {
-        Optional<String> optionalNull = Optional.ofNullable(null);
         var documentList = assertDoesNotThrow(() -> this.repository.findByQuery(null, null, YESTERDAY_DATE, YESTERDAY_DATE));
         assertEquals(1, documentList.size());
     }
@@ -139,7 +135,6 @@ class DocumentRepositoryTest {
     @Test
     @DisplayName("Get Documents by Query outside range date parameter")
     void findByQueryWithOutsideDateRange() {
-        Optional<String> optionalNull = Optional.ofNullable(null);
         var documentList = assertDoesNotThrow(() -> this.repository.findByQuery(null, null, LocalDateTime.now(), null));
         assertEquals(0, documentList.size());
     }
