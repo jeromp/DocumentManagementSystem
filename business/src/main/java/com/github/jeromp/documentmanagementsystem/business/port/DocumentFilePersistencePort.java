@@ -9,5 +9,9 @@ public interface DocumentFilePersistencePort {
 
     Resource readAsResource(String fileName);
 
+    InputStream readAsInputStream(String fileName);
+
+    String readMimeType(String fileName);
+
     void delete(String fileName);
 }

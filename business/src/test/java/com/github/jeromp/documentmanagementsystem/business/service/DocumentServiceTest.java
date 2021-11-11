@@ -137,6 +137,25 @@ class DocumentServiceTest {
         );
     }
 
+    @Test
+    @DisplayName("Test load document file as stream")
+    void readAsStream() {
+        var content = "Hello World".getBytes();
+        var mimeType = "application/pdf";
+        var stream = new ByteArrayInputStream(content);
+        when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
+        when(documentFilePersistencePort.readAsInputStream(this.documentBo.getPath())).thenReturn(stream);
+        when(documentFilePersistencePort.readMimeType(this.documentBo.getPath())).thenReturn(mimeType);
+        when(this.documentResource.exists()).thenReturn(true);
+        when(this.documentResource.isFile()).thenReturn(true);
+        var readDocument = documentService.readStream(this.documentBo.getUuid().toString());
+        assertAll("all properties of readed document stream bo",
+                () -> assertDoesNotThrow(() -> readDocument.getBytes()),
+                () -> assertEquals(content.length, readDocument.getBytes().length),
+                () -> assertEquals(mimeType, readDocument.getContentType())
+        );
+    }
+
     @AfterEach
     void tearDown() {
         assertDoesNotThrow(() -> this.documentDataPersistencePort.delete(this.documentBo));

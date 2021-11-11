@@ -1,6 +1,7 @@
 package com.github.jeromp.documentmanagementsystem.business.port;
 
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
+import com.github.jeromp.documentmanagementsystem.entity.DocumentStreamBo;
 import org.springframework.core.io.Resource;
 
 import java.io.InputStream;
@@ -10,6 +11,8 @@ import java.util.Optional;
 
 public interface DocumentServicePort {
     Resource readResource(String uuidString);
+
+    DocumentStreamBo readStream(String uuidString);
 
     DocumentBo readBo(String uuidString);
 
