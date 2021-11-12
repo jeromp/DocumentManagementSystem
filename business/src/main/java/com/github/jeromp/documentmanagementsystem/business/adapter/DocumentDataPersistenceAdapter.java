@@ -24,7 +24,7 @@ public class DocumentDataPersistenceAdapter implements DocumentDataPersistencePo
 
     @Override
     public DocumentBo readByUuid(UUID uuid) {
-        var document = this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document with id: " + uuid + " not found."));
+        var document = this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentNotFoundException("Document with id: " + uuid + " not found."));
         return this.documentMapper.documentToDocumentBo(document);
     }
 

@@ -109,7 +109,7 @@ class DocumentResourceTest extends AbstractResourceTest {
     @DisplayName("Test get request with false id")
     void getDocumentByWrongId() throws Exception {
         var randomUUID = UUID.randomUUID().toString();
-        when(service.readBo(randomUUID)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Some message"));
+        when(service.readBo(randomUUID)).thenThrow(new DocumentNotFoundException("Some message"));
         String uri = BASE_URI + "/" + randomUUID;
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
@@ -250,7 +250,7 @@ class DocumentResourceTest extends AbstractResourceTest {
     void getDocumentAsBytesFails() throws Exception {
         var uuid = UUID.randomUUID().toString();
         String uri = BASE_URI + "/" + uuid + "/stream";
-        when(service.readStream(uuid)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document not found.", null));
+        when(service.readStream(uuid)).thenThrow(new DocumentNotFoundException("Document not found.", null));
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)).andReturn();
         assertEquals(HttpStatus.NOT_FOUND.value(), mvcResult.getResponse().getStatus());
     }
@@ -269,7 +269,7 @@ class DocumentResourceTest extends AbstractResourceTest {
     void deleteNotExistingDocument() throws Exception {
         var uuid = UUID.randomUUID().toString();
         String uri = BASE_URI + "/" + uuid;
-        doThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document not found.", null)).when(service).delete(uuid);
+        doThrow(new DocumentNotFoundException("Document not found.")).when(service).delete(uuid);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)).andReturn();
         assertEquals(HttpStatus.NOT_FOUND.value(), mvcResult.getResponse().getStatus());
     }

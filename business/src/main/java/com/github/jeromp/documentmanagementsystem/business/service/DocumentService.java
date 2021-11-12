@@ -84,7 +84,7 @@ public class DocumentService implements DocumentServicePort {
         var uuid = UUID.fromString(uuidString);
         var document = this.documentDataPersistencePort.readByUuid(uuid);
         if (!this.documentFilePersistencePort.delete(document.getPath())) {
-            throw new DocumentNotFoundException(HttpStatus.NOT_FOUND, "No file found.", null);
+            throw new DocumentNotFoundException("No file found.", null);
         }
         this.documentDataPersistencePort.delete(document);
     }
