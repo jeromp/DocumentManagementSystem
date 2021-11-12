@@ -19,4 +19,6 @@ public interface DocumentServicePort {
     DocumentBo create(InputStream file, String originalFileName, DocumentBo documentBo);
 
     List<DocumentBo> findByQuery(Optional<String> title, Optional<String> description, Optional<LocalDateTime> documentCreatedAfter, Optional<LocalDateTime> documentCreatedBefore);
+
+    void delete(String uuidString);
 }

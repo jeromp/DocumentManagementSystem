@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -97,5 +98,15 @@ public class DocumentResource {
                                         @RequestParam(name = "documentCreatedBefore", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<LocalDateTime> isoDocumentCreatedBefore) {
         var queriedDocuments = service.findByQuery(title, description, isoDocumentCreatedAfter, isoDocumentCreatedBefore);
         return (this.documentDtoMapper.mapDocumentBosToDocumentDtoList(queriedDocuments));
+    }
+
+    @Operation(
+            summary = "Delete document by id",
+            description = "delete document by uuid"
+    )
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteById(@PathVariable(value = "id") @UuidIsValid String id) {
+        service.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

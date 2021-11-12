@@ -36,7 +36,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -252,6 +252,25 @@ class DocumentResourceTest extends AbstractResourceTest {
         String uri = BASE_URI + "/" + uuid + "/stream";
         when(service.readStream(uuid)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document not found.", null));
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)).andReturn();
+        assertEquals(HttpStatus.NOT_FOUND.value(), mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Delete document by id")
+    void deleteDocument() throws Exception {
+        String uri = BASE_URI + "/" + this.uuid;
+        doNothing().when(service).delete(this.uuid.toString());
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)).andReturn();
+        assertEquals(HttpStatus.NO_CONTENT.value(), mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    @DisplayName("Delete not existing document by id")
+    void deleteNotExistingDocument() throws Exception {
+        var uuid = UUID.randomUUID().toString();
+        String uri = BASE_URI + "/" + uuid;
+        doThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document not found.", null)).when(service).delete(uuid);
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)).andReturn();
         assertEquals(HttpStatus.NOT_FOUND.value(), mvcResult.getResponse().getStatus());
     }
 }
