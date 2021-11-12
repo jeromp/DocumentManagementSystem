@@ -1,13 +1,18 @@
 package com.github.jeromp.documentmanagementsystem.business.service;
 
-import com.github.jeromp.documentmanagementsystem.business.port.DocumentPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentFilePersistencePort;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentServicePort;
 
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentServiceException;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
+import com.github.jeromp.documentmanagementsystem.entity.DocumentStreamBo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,27 +22,50 @@ import java.util.UUID;
 @Service
 public class DocumentService implements DocumentServicePort {
 
-    private DocumentPersistencePort documentPersistencePort;
+    private DocumentDataPersistencePort documentDataPersistencePort;
+    private DocumentFilePersistencePort documentFilePersistencePort;
 
     @Autowired
-    public DocumentService(DocumentPersistencePort documentPersistencePort) {
-        this.documentPersistencePort = documentPersistencePort;
+    public DocumentService(DocumentDataPersistencePort documentDataPersistencePort, DocumentFilePersistencePort documentFilePersistencePort) {
+        this.documentDataPersistencePort = documentDataPersistencePort;
+        this.documentFilePersistencePort = documentFilePersistencePort;
     }
 
     @Override
-    public DocumentBo read(String uuidString) {
+    public Resource readResource(String uuidString) {
         var uuid = UUID.fromString(uuidString);
-        return this.documentPersistencePort.findByUuid(uuid);
+        var document = this.documentDataPersistencePort.readByUuid(uuid);
+        return this.documentFilePersistencePort.readAsResource(document.getPath());
+    }
+
+    @Override
+    public DocumentStreamBo readStream(String uuidString) {
+        var uuid = UUID.fromString(uuidString);
+        var document = this.documentDataPersistencePort.readByUuid(uuid);
+        DocumentStreamBo documentStreamBo = new DocumentStreamBo();
+        try (InputStream stream = this.documentFilePersistencePort.readAsInputStream(document.getPath())) {
+            documentStreamBo.setBytes(stream.readAllBytes());
+            documentStreamBo.setContentType(this.documentFilePersistencePort.readMimeType(document.getPath()));
+        } catch (IOException e) {
+            throw new DocumentServiceException(HttpStatus.BAD_REQUEST, "Could not read file content.", e);
+        }
+        return documentStreamBo;
+    }
+
+    @Override
+    public DocumentBo readBo(String uuidString) {
+        var uuid = UUID.fromString(uuidString);
+        return this.documentDataPersistencePort.readByUuid(uuid);
     }
 
     @Override
     public DocumentBo create(InputStream file, String originalFileName, DocumentBo documentBo) {
         var uuid = UUID.randomUUID();
         String fileName = createFileName(originalFileName, documentBo.getTitle(), uuid);
-        this.documentPersistencePort.create(file, fileName);
+        this.documentFilePersistencePort.create(file, fileName);
         documentBo.setUuid(uuid);
         documentBo.setPath(fileName);
-        return this.documentPersistencePort.save(documentBo);
+        return this.documentDataPersistencePort.create(documentBo);
     }
 
     @Override
@@ -46,7 +74,7 @@ public class DocumentService implements DocumentServicePort {
         String descriptionString = description.orElse(null);
         LocalDateTime documentCreatedAfterObj = documentCreatedAfter.orElse(null);
         LocalDateTime documentCreatedBeforeObj = documentCreatedBefore.orElse(null);
-        return this.documentPersistencePort.findByQuery(titleString, descriptionString, documentCreatedAfterObj, documentCreatedBeforeObj);
+        return this.documentDataPersistencePort.findByQuery(titleString, descriptionString, documentCreatedAfterObj, documentCreatedBeforeObj);
     }
 
     private String createFileName(String oldFile, String title, UUID id) {

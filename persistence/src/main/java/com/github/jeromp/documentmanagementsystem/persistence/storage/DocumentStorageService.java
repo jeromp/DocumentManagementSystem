@@ -1,12 +1,15 @@
 package com.github.jeromp.documentmanagementsystem.persistence.storage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +39,41 @@ public class DocumentStorageService implements CrudStorageService {
     @Override
     public Path read(String fileName) {
         return this.rootLocation.resolve(fileName);
+    }
+
+    @Override
+    public Resource readAsResource(String fileName) {
+        try {
+            Path filePath = this.rootLocation.resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new StorageException(HttpStatus.NOT_FOUND, "File not found");
+            }
+        } catch (MalformedURLException e) {
+            throw new StorageException(HttpStatus.NOT_FOUND, "File not found");
+        }
+    }
+
+    @Override
+    public InputStream readAsInputStream(String fileName) {
+        try {
+            Path filePath = this.rootLocation.resolve(fileName).normalize();
+            return Files.newInputStream(filePath);
+        } catch (IOException e) {
+            throw new StorageException(HttpStatus.NOT_FOUND, "Could not read file", e);
+        }
+    }
+
+    @Override
+    public String readMimeType(String fileName) {
+        try {
+            Path filePath = this.rootLocation.resolve(fileName).normalize();
+            return Files.probeContentType(filePath);
+        } catch (IOException e) {
+            throw new StorageException(HttpStatus.NOT_FOUND, "Could not read file", e);
+        }
     }
 
     @Override

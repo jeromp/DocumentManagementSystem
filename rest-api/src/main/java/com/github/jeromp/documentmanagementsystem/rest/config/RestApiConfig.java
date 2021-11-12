@@ -1,7 +1,9 @@
 package com.github.jeromp.documentmanagementsystem.rest.config;
 
-import com.github.jeromp.documentmanagementsystem.business.adapter.DocumentPersistenceAdapter;
-import com.github.jeromp.documentmanagementsystem.business.port.DocumentPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.adapter.DocumentDataPersistenceAdapter;
+import com.github.jeromp.documentmanagementsystem.business.adapter.DocumentFilePersistenceAdapter;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentFilePersistencePort;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentServicePort;
 import com.github.jeromp.documentmanagementsystem.business.service.DocumentService;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -17,12 +19,18 @@ public class RestApiConfig {
 
     @Bean
     @Primary
-    public DocumentPersistencePort documentPersistence() {
-        return new DocumentPersistenceAdapter();
+    public DocumentDataPersistencePort documentDataPersistence() {
+        return new DocumentDataPersistenceAdapter();
+    }
+
+    @Bean
+    @Primary
+    public DocumentFilePersistencePort documentFilePersistence() {
+        return new DocumentFilePersistenceAdapter();
     }
 
     @Bean
     public DocumentServicePort documentService() {
-        return new DocumentService(documentPersistence());
+        return new DocumentService(documentDataPersistence(), documentFilePersistence());
     }
 }

@@ -1,5 +1,6 @@
 package com.github.jeromp.documentmanagementsystem.rest.resource.common;
 
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentNotFoundException;
 import com.github.jeromp.documentmanagementsystem.rest.dto.ErrorDto;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -48,8 +49,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(DocumentNotFoundException.class)
-    @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
-    @ApiResponse(responseCode = "412", description = "Precondition Failed", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDto.class)))
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDto.class)))
     protected ResponseEntity<ErrorDto> handleDocumentNotFound(DocumentNotFoundException exception) {
         String error = "Document not found";
         var errorDto = new ErrorDto(HttpStatus.NOT_FOUND, exception.getMessage(), error);

@@ -1,6 +1,8 @@
 package com.github.jeromp.documentmanagementsystem.business.service;
 
-import com.github.jeromp.documentmanagementsystem.business.port.DocumentPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.port.DocumentFilePersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentServiceException;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import com.github.jeromp.documentmanagementsystem.entity.MetaBo;
 
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -32,12 +35,18 @@ class DocumentServiceTest {
     private static final String DOCUMENT_DESCRIPTION = "Example description is here.";
 
     @Mock
-    private DocumentPersistencePort documentPersistencePort;
+    private DocumentDataPersistencePort documentDataPersistencePort;
+
+    @Mock
+    private DocumentFilePersistencePort documentFilePersistencePort;
 
     @InjectMocks
     private DocumentService documentService;
 
     private DocumentBo documentBo;
+
+    @Mock
+    private Resource documentResource;
 
     @BeforeEach
     void setUp() {
@@ -55,8 +64,8 @@ class DocumentServiceTest {
     @Test
     @DisplayName("Test find document by correct id")
     void readByCorrectId() {
-        when(documentPersistencePort.findByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
-        var readDocument = documentService.read(this.documentBo.getUuid().toString());
+        when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
+        var readDocument = documentService.readBo(this.documentBo.getUuid().toString());
         assertAll("all properties of readed document",
                 () -> assertEquals(documentBo.getTitle(), readDocument.getTitle()),
                 () -> assertEquals(documentBo.getUuid(), readDocument.getUuid()),
@@ -69,8 +78,8 @@ class DocumentServiceTest {
     @DisplayName("Test throw error for document with incorrect id")
     void readByIncorrectId() {
         var uuid = UUID.randomUUID();
-        when(documentPersistencePort.findByUuid(uuid)).thenThrow(new DocumentServiceException(HttpStatus.NOT_FOUND, "There will be a message."));
-        var exception = assertThrows(DocumentServiceException.class, () -> documentService.read(uuid.toString()));
+        when(documentDataPersistencePort.readByUuid(uuid)).thenThrow(new DocumentServiceException(HttpStatus.NOT_FOUND, "There will be a message."));
+        var exception = assertThrows(DocumentServiceException.class, () -> documentService.readBo(uuid.toString()));
         assertEquals(HttpStatus.NOT_FOUND, exception.getErrorCode());
     }
 
@@ -88,8 +97,8 @@ class DocumentServiceTest {
         metaBo.setDocumentCreated(EXAMPLE_TIME);
         documentBo.setMeta(metaBo);
 
-        when(documentPersistencePort.save(documentBo)).thenReturn(documentBo);
-        doNothing().when(documentPersistencePort).create(any(InputStream.class), any(String.class));
+        when(documentDataPersistencePort.create(documentBo)).thenReturn(documentBo);
+        doNothing().when(documentFilePersistencePort).create(any(InputStream.class), any(String.class));
         var readDocument = assertDoesNotThrow(() -> this.documentService.create(file, testTitle + ".txt", documentBo));
         assertAll("all properties of read document",
                 () -> assertEquals(testTitle, readDocument.getTitle()),
@@ -105,7 +114,7 @@ class DocumentServiceTest {
         String description = DOCUMENT_DESCRIPTION;
         var documentBoList = new ArrayList<DocumentBo>();
         documentBoList.add(this.documentBo);
-        when(documentPersistencePort.findByQuery(title, description, null, null)).thenReturn(documentBoList);
+        when(documentDataPersistencePort.findByQuery(title, description, null, null)).thenReturn(documentBoList);
         var queriedDocuments = documentService.findByQuery(Optional.of(title), Optional.of(description), Optional.ofNullable(null), Optional.ofNullable(null));
         assertAll("all properties of readed document",
                 () -> assertEquals(1, queriedDocuments.size()),
@@ -113,8 +122,42 @@ class DocumentServiceTest {
         );
     }
 
+    @Test
+    @DisplayName("Test load document file as resource")
+    void readAsResource() {
+        when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
+        when(documentFilePersistencePort.readAsResource(this.documentBo.getPath())).thenReturn(this.documentResource);
+        when(this.documentResource.exists()).thenReturn(true);
+        when(this.documentResource.isFile()).thenReturn(true);
+        var readDocument = documentService.readResource(this.documentBo.getUuid().toString());
+        assertAll("all properties of readed document",
+                () -> assertEquals(readDocument, readDocument),
+                () -> assertTrue(readDocument.exists()),
+                () -> assertTrue(readDocument.isFile())
+        );
+    }
+
+    @Test
+    @DisplayName("Test load document file as stream")
+    void readAsStream() {
+        var content = "Hello World".getBytes();
+        var mimeType = "application/pdf";
+        var stream = new ByteArrayInputStream(content);
+        when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
+        when(documentFilePersistencePort.readAsInputStream(this.documentBo.getPath())).thenReturn(stream);
+        when(documentFilePersistencePort.readMimeType(this.documentBo.getPath())).thenReturn(mimeType);
+        when(this.documentResource.exists()).thenReturn(true);
+        when(this.documentResource.isFile()).thenReturn(true);
+        var readDocument = documentService.readStream(this.documentBo.getUuid().toString());
+        assertAll("all properties of readed document stream bo",
+                () -> assertDoesNotThrow(() -> readDocument.getBytes()),
+                () -> assertEquals(content.length, readDocument.getBytes().length),
+                () -> assertEquals(mimeType, readDocument.getContentType())
+        );
+    }
+
     @AfterEach
     void tearDown() {
-        assertDoesNotThrow(() -> this.documentPersistencePort.delete(this.documentBo));
+        assertDoesNotThrow(() -> this.documentDataPersistencePort.delete(this.documentBo));
     }
 }

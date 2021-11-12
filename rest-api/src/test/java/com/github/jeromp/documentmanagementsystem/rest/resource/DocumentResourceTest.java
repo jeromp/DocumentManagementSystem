@@ -1,5 +1,6 @@
 package com.github.jeromp.documentmanagementsystem.rest.resource;
 
+import com.github.jeromp.documentmanagementsystem.entity.DocumentStreamBo;
 import com.github.jeromp.documentmanagementsystem.rest.RestApiTestConfig;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentServicePort;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
@@ -7,7 +8,7 @@ import com.github.jeromp.documentmanagementsystem.entity.MetaBo;
 import com.github.jeromp.documentmanagementsystem.rest.dto.DocumentDto;
 import com.github.jeromp.documentmanagementsystem.rest.dto.MetaDto;
 import com.github.jeromp.documentmanagementsystem.rest.dto.mapper.DocumentDtoMapper;
-import com.github.jeromp.documentmanagementsystem.rest.resource.common.DocumentNotFoundException;
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -88,7 +89,7 @@ class DocumentResourceTest extends AbstractResourceTest {
     @DisplayName("Test get request with correct id")
     void getDocumentById() throws Exception {
         String uri = BASE_URI + "/" + this.uuid;
-        when(service.read(this.uuid.toString())).thenReturn(this.documentBo);
+        when(service.readBo(this.uuid.toString())).thenReturn(this.documentBo);
         when(documentDtoMapper.documentBoToDocumentDto(this.documentBo)).thenReturn(this.documentDto);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
@@ -108,7 +109,7 @@ class DocumentResourceTest extends AbstractResourceTest {
     @DisplayName("Test get request with false id")
     void getDocumentByWrongId() throws Exception {
         var randomUUID = UUID.randomUUID().toString();
-        when(service.read(randomUUID)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Some message"));
+        when(service.readBo(randomUUID)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Some message"));
         String uri = BASE_URI + "/" + randomUUID;
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
@@ -228,5 +229,29 @@ class DocumentResourceTest extends AbstractResourceTest {
         assertAll("all properties",
                 () -> assertEquals(1, responseDocument.size())
         );
+    }
+
+    @Test
+    @DisplayName("Get document as stream")
+    void getDocumentAsBytes() throws Exception {
+        DocumentStreamBo streamBo = new DocumentStreamBo();
+        streamBo.setBytes("Hello World".getBytes());
+        streamBo.setContentType(MediaType.TEXT_PLAIN_VALUE);
+        String uri = BASE_URI + "/" + this.uuid + "/stream";
+        when(service.readStream(this.uuid.toString())).thenReturn(streamBo);
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)).andReturn();
+        assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
+        String response = mvcResult.getResponse().getContentAsString();
+        assertEquals("Hello World", response);
+    }
+
+    @Test
+    @DisplayName("Get document as stream of not existing document")
+    void getDocumentAsBytesFails() throws Exception {
+        var uuid = UUID.randomUUID().toString();
+        String uri = BASE_URI + "/" + uuid + "/stream";
+        when(service.readStream(uuid)).thenThrow(new DocumentNotFoundException(HttpStatus.NOT_FOUND, "Document not found.", null));
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)).andReturn();
+        assertEquals(HttpStatus.NOT_FOUND.value(), mvcResult.getResponse().getStatus());
     }
 }
