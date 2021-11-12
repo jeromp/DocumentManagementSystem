@@ -10,7 +10,7 @@ public interface CrudStorageService {
 
     void create(InputStream file, String fileName);
 
-    void delete(String fileName);
+    boolean delete(String fileName);
 
     Path read(String fileName);
 
