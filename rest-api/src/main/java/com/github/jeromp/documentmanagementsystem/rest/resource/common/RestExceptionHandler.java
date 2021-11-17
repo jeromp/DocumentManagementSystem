@@ -53,7 +53,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDto.class)))
     protected ResponseEntity<ErrorDto> handleDocumentNotFound(DocumentNotFoundException exception) {
         String error = "Document not found";
-        var errorDto = new ErrorDto(HttpStatus.NOT_FOUND, exception.getMessage(), error);
+        var errorDto = new ErrorDto(exception.getErrorCode(), exception.getMessage(), error);
         return prepareResponseEntity(errorDto);
     }
 

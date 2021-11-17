@@ -148,6 +148,16 @@ class DocumentRepositoryTest {
         assertEquals(0, documentList2.size());
     }
 
+    @Test
+    @DisplayName("Find and delete document")
+    void findAndDelete() {
+        var result = this.repository.findByUuid(this.persistedDocUnderTest.getUuid());
+        assertTrue(result.isPresent());
+        var document = result.orElse(null);
+        assertDoesNotThrow(() -> this.repository.delete(document));
+        assertFalse(this.repository.findByUuid(this.persistedDocUnderTest.getUuid()).isPresent());
+    }
+
     @AfterEach
     void tearDown() {
         assertDoesNotThrow(() -> this.repository.delete(this.persistedDocUnderTest));

@@ -4,6 +4,7 @@ import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPers
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentFilePersistencePort;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentServicePort;
 
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentNotFoundException;
 import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentServiceException;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentStreamBo;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,6 +77,18 @@ public class DocumentService implements DocumentServicePort {
         LocalDateTime documentCreatedAfterObj = documentCreatedAfter.orElse(null);
         LocalDateTime documentCreatedBeforeObj = documentCreatedBefore.orElse(null);
         return this.documentDataPersistencePort.findByQuery(titleString, descriptionString, documentCreatedAfterObj, documentCreatedBeforeObj);
+    }
+
+    @Override
+    public void delete(String uuidString) {
+        var uuid = UUID.fromString(uuidString);
+        var document = this.documentDataPersistencePort.readByUuid(uuid);
+        var success = this.documentFilePersistencePort.delete(document.getPath());
+        if (!success) {
+            throw new DocumentNotFoundException("No file found.", null);
+        } else {
+            this.documentDataPersistencePort.delete(uuid);
+        }
     }
 
     private String createFileName(String oldFile, String title, UUID id) {

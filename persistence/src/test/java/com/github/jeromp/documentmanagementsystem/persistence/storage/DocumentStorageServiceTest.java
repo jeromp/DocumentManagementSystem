@@ -11,6 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,8 +61,16 @@ public class DocumentStorageServiceTest {
     void deleteExistingFile() {
         service.create(TEST_FILE, FILE_NAME);
         assertTrue(Files.exists(service.read(FILE_NAME)));
-        service.delete(FILE_NAME);
+        assertTrue(service.delete(FILE_NAME));
         assertFalse(Files.exists(service.read(FILE_NAME)));
+    }
+
+    @Test
+    @DisplayName("delete not existing file")
+    void deleteNotExistingFile() {
+        String randomFileName = "randomStringFileName";
+        assertFalse(Files.exists(service.read(randomFileName)));
+        assertFalse(service.delete(randomFileName));
     }
 
     @Test

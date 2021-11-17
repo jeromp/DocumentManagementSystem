@@ -2,6 +2,7 @@ package com.github.jeromp.documentmanagementsystem.business.service;
 
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentDataPersistencePort;
 import com.github.jeromp.documentmanagementsystem.business.port.DocumentFilePersistencePort;
+import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentNotFoundException;
 import com.github.jeromp.documentmanagementsystem.business.service.common.DocumentServiceException;
 import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
 import com.github.jeromp.documentmanagementsystem.entity.MetaBo;
@@ -156,8 +157,21 @@ class DocumentServiceTest {
         );
     }
 
-    @AfterEach
-    void tearDown() {
-        assertDoesNotThrow(() -> this.documentDataPersistencePort.delete(this.documentBo));
+    @Test
+    @DisplayName("Test delete document")
+    void deleteDocument() {
+        when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
+        when(documentFilePersistencePort.delete(this.documentBo.getPath())).thenReturn(true);
+        doNothing().when(documentDataPersistencePort).delete(this.documentBo.getUuid());
+        assertDoesNotThrow(() -> documentService.delete(this.documentBo.getUuid().toString()));
     }
+
+    @Test
+    @DisplayName("Test delete not existing document")
+    void deleteNotExistingDocument() {
+        var uuid = UUID.randomUUID();
+        when(documentDataPersistencePort.readByUuid(uuid)).thenThrow(DocumentNotFoundException.class);
+        assertThrows(DocumentNotFoundException.class, () -> documentService.delete(uuid.toString()));
+    }
+
 }

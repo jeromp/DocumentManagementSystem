@@ -3,18 +3,17 @@ package com.github.jeromp.documentmanagementsystem.business.service.common;
 import org.springframework.http.HttpStatus;
 
 public class DocumentNotFoundException extends RuntimeException {
-    private HttpStatus errorCode;
+    private HttpStatus errorCode = HttpStatus.NOT_FOUND;
 
-    public DocumentNotFoundException(HttpStatus errorCode, String message){
-        this(errorCode, message, null);
+    public DocumentNotFoundException(String message) {
+        this(message, null);
     }
 
-    public DocumentNotFoundException(HttpStatus errorCode, String message, Throwable cause){
+    public DocumentNotFoundException(String message, Throwable cause) {
         super(message, cause);
-        this.errorCode = errorCode;
     }
 
-    public HttpStatus getErrorCode(){
+    public HttpStatus getErrorCode() {
         return this.errorCode;
     }
 }

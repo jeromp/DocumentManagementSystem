@@ -93,11 +93,11 @@ public class DocumentStorageService implements CrudStorageService {
     }
 
     @Override
-    public void delete(String fileName){
+    public boolean delete(String fileName) {
         try {
             Path file = this.getPath(fileName);
-            Files.deleteIfExists(file);
-        } catch(IOException e) {
+            return Files.deleteIfExists(file);
+        } catch (IOException e) {
             throw new StorageException(HttpStatus.BAD_REQUEST, "Failed to delete file.", e);
         }
     }
