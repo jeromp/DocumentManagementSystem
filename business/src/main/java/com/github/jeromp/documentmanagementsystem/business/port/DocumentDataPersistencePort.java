@@ -16,5 +16,5 @@ public interface DocumentDataPersistencePort {
 
     DocumentBo create(DocumentBo documentBo);
 
-    void delete(DocumentBo documentBo);
+    void delete(UUID uuid);
 }

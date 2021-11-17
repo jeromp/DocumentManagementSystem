@@ -162,7 +162,7 @@ class DocumentServiceTest {
     void deleteDocument() {
         when(documentDataPersistencePort.readByUuid(this.documentBo.getUuid())).thenReturn(this.documentBo);
         when(documentFilePersistencePort.delete(this.documentBo.getPath())).thenReturn(true);
-        doNothing().when(documentDataPersistencePort).delete(this.documentBo);
+        doNothing().when(documentDataPersistencePort).delete(this.documentBo.getUuid());
         assertDoesNotThrow(() -> documentService.delete(this.documentBo.getUuid().toString()));
     }
 
@@ -174,8 +174,4 @@ class DocumentServiceTest {
         assertThrows(DocumentNotFoundException.class, () -> documentService.delete(uuid.toString()));
     }
 
-    @AfterEach
-    void tearDown() {
-        assertDoesNotThrow(() -> this.documentDataPersistencePort.delete(this.documentBo));
-    }
 }

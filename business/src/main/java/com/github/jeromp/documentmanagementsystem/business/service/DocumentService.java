@@ -83,10 +83,12 @@ public class DocumentService implements DocumentServicePort {
     public void delete(String uuidString) {
         var uuid = UUID.fromString(uuidString);
         var document = this.documentDataPersistencePort.readByUuid(uuid);
-        if (!this.documentFilePersistencePort.delete(document.getPath())) {
+        var success = this.documentFilePersistencePort.delete(document.getPath());
+        if (!success) {
             throw new DocumentNotFoundException("No file found.", null);
+        } else {
+            this.documentDataPersistencePort.delete(uuid);
         }
-        this.documentDataPersistencePort.delete(document);
     }
 
     private String createFileName(String oldFile, String title, UUID id) {

@@ -48,8 +48,8 @@ public class DocumentDataPersistenceAdapter implements DocumentDataPersistencePo
     }
 
     @Override
-    public void delete(DocumentBo documentBo) {
-        var document = this.documentMapper.documentBoToDocument(documentBo);
+    public void delete(UUID uuid) {
+        var document = this.documentRepository.findByUuid(uuid).orElseThrow(() -> new DocumentNotFoundException("Document with id: " + uuid + " not found."));
         this.documentRepository.delete(document);
     }
 
