@@ -8,16 +8,22 @@ Model class for Documents
 */
 
 @Entity
-@Table(name="DOCUMENT")
+@Table(name = "DOCUMENT")
 public class Document extends BaseEntity {
 
-    @Column(name="uuid")
+    @Column(name = "uuid")
     private UUID uuid;
 
-    @Column(name="title")
+    @Column(name = "type")
+    private DocumentType type;
+
+    @Column(name = "parent")
+    private Document parent;
+
+    @Column(name = "title")
     private String title;
 
-    @Column(name="path")
+    @Column(name = "path")
     private String path;
 
     @OneToOne(mappedBy = "document", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -51,12 +57,28 @@ public class Document extends BaseEntity {
         return this.meta;
     }
 
-    public void setMeta(Meta meta){
+    public void setMeta(Meta meta) {
         this.meta = meta;
     }
 
+    public DocumentType getType() {
+        return this.type;
+    }
+
+    public void setType(DocumentType type) {
+        this.type = type;
+    }
+
+    public Document getParent() {
+        return this.parent;
+    }
+
+    public void setParent(Document parent) {
+        this.parent = parent;
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return "ID: " + this.id + " Title: " + this.title;
     }
 }
