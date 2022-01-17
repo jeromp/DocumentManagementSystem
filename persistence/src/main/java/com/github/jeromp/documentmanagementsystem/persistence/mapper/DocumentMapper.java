@@ -22,7 +22,7 @@ public interface DocumentMapper {
     @Mapping(target = "meta.documentCreated", source = "documentCreated")
     @Mapping(target = "created", ignore = true)
     @Mapping(target = "changed", ignore = true)
-    Document mapPartsToDocument(String title, UUID uuid, String path, String description, String documentCreated);
+    Document mapPartsToDocument(String type, String title, UUID uuid, String path, String description, String documentCreated);
 
     @AfterMapping
     default Document establishRelation(@MappingTarget Document document) {
