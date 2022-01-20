@@ -1,5 +1,10 @@
 package com.github.jeromp.documentmanagementsystem.persistence.model;
 
+import org.springframework.http.HttpStatus;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.*;
 
@@ -17,8 +22,11 @@ public class Document extends BaseEntity {
     @Column(name = "type")
     private DocumentType type;
 
-    @Column(name = "parent")
+    @ManyToOne
     private Document parent;
+
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Document> children = new ArrayList<>();
 
     @Column(name = "title")
     private String title;
@@ -73,13 +81,34 @@ public class Document extends BaseEntity {
         return this.parent;
     }
 
-    public void setParent(Document parent) {
+    public void setParent(Document parent) throws IllegalRelationshipException {
+        if (parent.getType() != DocumentType.DIRECTORY) {
+            throw new IllegalRelationshipException(HttpStatus.METHOD_NOT_ALLOWED, "Parent needs to be of type Directory");
+        }
         this.parent = parent;
+        this.parent.addChildren(this);
+    }
+
+    public Collection<Document> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Document> children) {
+        this.children = children;
+    }
+
+    public void addChildren(Document children) throws IllegalRelationshipException {
+        if (this.type != DocumentType.DIRECTORY) {
+            throw new IllegalRelationshipException(HttpStatus.METHOD_NOT_ALLOWED, "Parent needs to be of type Directory");
+        }
+        this.children.add(children);
     }
 
     @Override
     public String toString() {
         return "ID: " + this.id + " Title: " + this.title;
     }
+
+
 }
 
