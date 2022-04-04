@@ -1,9 +1,13 @@
 package com.github.jeromp.documentmanagementsystem.rest.dto;
 
+import com.github.jeromp.documentmanagementsystem.entity.DocumentBo;
+
 import java.util.UUID;
 
 public class DocumentDto {
     private UUID uuid;
+    private DocumentDto parent;
+    private String type;
     private String title;
     private String path;
     private MetaDto meta;
@@ -14,6 +18,22 @@ public class DocumentDto {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public DocumentDto getParent() {
+        return parent;
+    }
+
+    public void setParent(DocumentDto parent) {
+        this.parent = parent;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getTitle() {

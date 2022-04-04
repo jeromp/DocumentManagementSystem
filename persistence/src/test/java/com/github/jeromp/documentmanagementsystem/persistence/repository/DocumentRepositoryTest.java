@@ -39,7 +39,7 @@ class DocumentRepositoryTest {
     @Autowired
     private DocumentRepository repository;
 
-    private LocalDateTime YESTERDAY_DATE = LocalDateTime.parse("2021-11-01T12:00:00");
+    private LocalDateTime YESTERDAY_DATE = LocalDateTime.parse("2021-11-01T11:00:00");
     private Document persistedDirectoryUnderTest;
     private Document persistedDocUnderTest;
     private Meta persistedMetaUnderTest;
@@ -207,7 +207,7 @@ class DocumentRepositoryTest {
         var result = this.repository.findByUuid(this.persistedDocUnderTest.getUuid());
         assertTrue(result.isPresent());
         var document = result.orElse(null);
-        assertDoesNotThrow(() -> this.repository.delete(document));
+        assertDoesNotThrow(() -> this.repository.deleteById(document.getId()));
         assertFalse(this.repository.findByUuid(this.persistedDocUnderTest.getUuid()).isPresent());
     }
 

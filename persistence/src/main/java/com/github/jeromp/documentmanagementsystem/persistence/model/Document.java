@@ -1,5 +1,6 @@
 package com.github.jeromp.documentmanagementsystem.persistence.model;
 
+import org.hibernate.annotations.Type;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -16,16 +17,18 @@ Model class for Documents
 @Table(name = "DOCUMENT")
 public class Document extends BaseEntity {
 
-    @Column(name = "uuid")
+    @Column(columnDefinition = "uuid", name = "uuid")
+    //@Type(type = "uuid-char")
     private UUID uuid;
 
     @Column(name = "type")
     private DocumentType type;
 
     @ManyToOne
+    @JoinColumn(name = "parent_id")
     private Document parent;
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, targetEntity = Document.class, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Document> children = new ArrayList<>();
 
     @Column(name = "title")
@@ -102,6 +105,14 @@ public class Document extends BaseEntity {
             throw new IllegalRelationshipException(HttpStatus.METHOD_NOT_ALLOWED, "Parent needs to be of type Directory");
         }
         this.children.add(children);
+    }
+
+    @PreRemove
+    public void preRemove() {
+        if (this.parent != null) {
+            this.parent.getChildren().remove(this);
+            this.parent = null;
+        }
     }
 
     @Override

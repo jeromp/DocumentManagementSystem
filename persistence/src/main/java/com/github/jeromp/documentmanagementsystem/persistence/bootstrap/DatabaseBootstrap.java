@@ -1,5 +1,6 @@
 package com.github.jeromp.documentmanagementsystem.persistence.bootstrap;
 
+import com.github.jeromp.documentmanagementsystem.persistence.model.DocumentType;
 import com.github.jeromp.documentmanagementsystem.persistence.repository.DocumentRepository;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class DatabaseBootstrap implements InitializingBean {
         document.setTitle("Sample Document");
         document.setPath("sample_path");
         document.setUuid(UUID.randomUUID());
+        document.setType(DocumentType.FILE);
         Meta meta = new Meta();
         meta.setDescription("This is a sample description");
         meta.setDocumentCreated(LocalDateTime.now());
