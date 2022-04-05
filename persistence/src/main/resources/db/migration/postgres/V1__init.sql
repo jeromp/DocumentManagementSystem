@@ -1,5 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+CREATE SEQUENCE hibernate_sequence START 1;
+
 CREATE TABLE document (
     id bigint,
     uuid UUID,

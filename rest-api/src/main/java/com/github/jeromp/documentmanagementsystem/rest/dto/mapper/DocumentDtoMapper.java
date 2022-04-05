@@ -14,6 +14,8 @@ public interface DocumentDtoMapper {
 
     @Mapping(target = "meta.description", source = "description")
     @Mapping(target = "meta.documentCreated", source = "documentCreated")
+    @Mapping(target = "parent", ignore = true)
+    @Mapping(target = "type", ignore = true)
     @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "path", ignore = true)
     DocumentBo mapPartsToDocumentBo(String title, String description, String documentCreated);

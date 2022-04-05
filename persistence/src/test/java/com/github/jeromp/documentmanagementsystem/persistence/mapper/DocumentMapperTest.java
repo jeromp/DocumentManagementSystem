@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Document Mapper Tests")
 class DocumentMapperTest {
     private static final String TITLE = "MAPSTRUCT";
+    private static final String TYPE = "FILE";
     private static final String PATH = "path_mapstruct";
     private static final String DESCRIPTION = "this is a mapstruct test";
     private static final String ISO_DATE_STRING = LocalDateTime.now().toString();
@@ -28,7 +29,7 @@ class DocumentMapperTest {
     @DisplayName("test with complete data")
     void testGivenDataToDocument() {
         var uuid = UUID.randomUUID();
-        var document = assertDoesNotThrow(() -> documentMapper.mapPartsToDocument(TITLE, uuid, PATH, DESCRIPTION, ISO_DATE_STRING));
+        var document = assertDoesNotThrow(() -> documentMapper.mapPartsToDocument(TYPE, TITLE, uuid, PATH, DESCRIPTION, ISO_DATE_STRING));
         assertAll("correct Document creation with complete data",
                 () -> assertEquals(TITLE, document.getTitle()),
                 () -> assertEquals(PATH, document.getPath()),
@@ -41,7 +42,7 @@ class DocumentMapperTest {
     @DisplayName("test without meta")
     void testWithOutMeta() {
         var uuid = UUID.randomUUID();
-        var document = assertDoesNotThrow(() -> documentMapper.mapPartsToDocument(TITLE, uuid, PATH, null, null));
+        var document = assertDoesNotThrow(() -> documentMapper.mapPartsToDocument(TYPE, TITLE, uuid, PATH, null, null));
         assertAll("correct Document creation without meta",
                 () -> assertEquals(TITLE, document.getTitle()),
                 () -> assertEquals(PATH, document.getPath()),

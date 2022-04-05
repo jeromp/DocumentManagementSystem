@@ -4,6 +4,8 @@ import java.util.UUID;
 
 public class DocumentBo implements BaseBo {
     private UUID uuid;
+    private DocumentBo parent;
+    private String type;
     private String title;
     private String path;
     private MetaBo meta;
@@ -14,6 +16,22 @@ public class DocumentBo implements BaseBo {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public DocumentBo getParent() {
+        return parent;
+    }
+
+    public void setParent(DocumentBo parent) {
+        this.parent = parent;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getTitle() {

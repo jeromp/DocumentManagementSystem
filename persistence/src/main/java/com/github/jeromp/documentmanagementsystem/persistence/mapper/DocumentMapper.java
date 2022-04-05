@@ -14,6 +14,8 @@ import java.util.UUID;
 
 @Mapper(config = MappingConfig.class, uses = {MetaMapper.class})
 public interface DocumentMapper {
+    @Mapping(target = "children", ignore = true)
+    @Mapping(target = "parent", ignore = true)
     Document documentBoToDocument(DocumentBo documentBo);
 
     DocumentBo documentToDocumentBo(Document document);
@@ -22,7 +24,9 @@ public interface DocumentMapper {
     @Mapping(target = "meta.documentCreated", source = "documentCreated")
     @Mapping(target = "created", ignore = true)
     @Mapping(target = "changed", ignore = true)
-    Document mapPartsToDocument(String title, UUID uuid, String path, String description, String documentCreated);
+    @Mapping(target = "children", ignore = true)
+    @Mapping(target = "parent", ignore = true)
+    Document mapPartsToDocument(String type, String title, UUID uuid, String path, String description, String documentCreated);
 
     @AfterMapping
     default Document establishRelation(@MappingTarget Document document) {
